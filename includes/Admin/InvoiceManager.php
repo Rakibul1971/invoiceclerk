@@ -15,6 +15,7 @@ class InvoiceManager {
         add_action( 'admin_post_ms_create_invoice', [ $this, 'create_invoice' ] );
         add_action( 'admin_post_ms_download_invoice', [ $this, 'download_invoice' ] );
         add_action( 'admin_post_ms_update_invoice_status', [ $this, 'update_invoice_status' ] );
+        add_action( 'admin_post_ms_delete_invoice', [ $this, 'delete_invoice' ] );
     }
 
     /**
@@ -234,5 +235,45 @@ class InvoiceManager {
 
         wp_redirect( admin_url( 'admin.php?page=manual-settelement&message=status_updated' ) );
         exit;
+    }
+
+    /**
+     * Delete an invoice and its related data
+     *
+     * @return void
+     */
+    public function delete_invoice() {
+        if ( ! isset( $_GET['_wpnonce'] ) || ! wp_verify_nonce( $_GET['_wpnonce'], 'ms_delete_invoice_nonce' ) ) {
+            wp_die( __( 'Security check failed.', 'manual-settelement' ) );
+        }
+
+        $id = isset( $_GET['id'] ) ? absint( $_GET['id'] ) : 0;
+        if ( ! $id ) {
+            wp_die( __( 'Invalid request.', 'manual-settelement' ) );
+        }
+
+        global $wpdb;
+
+        // Start transaction if supported or just delete
+        $wpdb->query( 'START TRANSACTION' );
+
+        try {
+            // Delete Mapping
+            $wpdb->delete( $wpdb->prefix . 'ms_invoice_order_mapping', [ 'invoice_id' => $id ] );
+            
+            // Delete Items
+            $wpdb->delete( $wpdb->prefix . 'ms_invoice_items', [ 'invoice_id' => $id ] );
+
+            // Delete Invoice
+            $wpdb->delete( $wpdb->prefix . 'ms_invoices', [ 'id' => $id ] );
+
+            $wpdb->query( 'COMMIT' );
+            
+            wp_redirect( admin_url( 'admin.php?page=manual-settelement&message=invoice_deleted' ) );
+            exit;
+        } catch ( \Exception $e ) {
+            $wpdb->query( 'ROLLBACK' );
+            wp_die( __( 'Failed to delete invoice.', 'manual-settelement' ) );
+        }
     }
 }

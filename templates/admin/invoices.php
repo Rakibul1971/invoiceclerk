@@ -24,6 +24,12 @@ $invoices = $wpdb->get_results( "SELECT * FROM $table ORDER BY created_at DESC" 
         </div>
     <?php endif; ?>
 
+    <?php if ( isset( $_GET['message'] ) && $_GET['message'] === 'invoice_deleted' ) : ?>
+        <div class="notice notice-info is-dismissible">
+            <p><?php esc_html_e( 'Invoice and related data deleted successfully.', 'manual-settelement' ); ?></p>
+        </div>
+    <?php endif; ?>
+
     <table class="wp-list-table widefat fixed striped">
         <thead>
             <tr>
@@ -59,6 +65,13 @@ $invoices = $wpdb->get_results( "SELECT * FROM $table ORDER BY created_at DESC" 
                             <?php else : ?>
                                 <a href="<?php echo esc_url( wp_nonce_url( admin_url( 'admin-post.php?action=ms_update_invoice_status&id=' . $invoice->id . '&status=draft' ), 'ms_update_status_nonce' ) ); ?>" class="button button-small"><?php esc_html_e( 'Mark as Draft', 'manual-settelement' ); ?></a>
                             <?php endif; ?>
+                            
+                            <a href="<?php echo esc_url( wp_nonce_url( admin_url( 'admin-post.php?action=ms_delete_invoice&id=' . $invoice->id ), 'ms_delete_invoice_nonce' ) ); ?>" 
+                               class="button button-small ms-delete-btn" 
+                               style="color: #b32d2e; border-color: #b32d2e;"
+                               onclick="return confirm('<?php echo esc_js( __( 'Are you sure you want to delete this invoice and release all mapped orders?', 'manual-settelement' ) ); ?>');">
+                               <?php esc_html_e( 'Delete', 'manual-settelement' ); ?>
+                            </a>
                         </td>
                     </tr>
                 <?php endforeach; ?>
