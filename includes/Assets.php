@@ -60,11 +60,15 @@ class Assets {
 	 * @return void
 	 */
 	public function enqueue_admin_scripts() {
+		wp_enqueue_style( 'manual_settelement_admin_style' );
 		wp_enqueue_script( 'manual_settelement_admin_script' );
 		wp_localize_script(
 			'manual_settelement_admin_script',
 			'Manual_Settelement_Admin',
-			array()
+			array(
+				'ajax_url' => admin_url( 'admin-ajax.php' ),
+				'nonce'    => wp_create_nonce( 'ms_admin_nonce' ),
+			)
 		);
 	}
 

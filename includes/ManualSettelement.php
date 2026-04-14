@@ -86,6 +86,9 @@ final class ManualSettelement {
      * Nothing is being called here yet.
      */
     public function activate() {
+        $installer = new Installer();
+        $installer->run();
+
         // Rewrite rules during manual_settelement activation
         if ( $this->has_woocommerce() ) {
             $this->flush_rewrite_rules();
@@ -175,7 +178,10 @@ final class ManualSettelement {
      * @return void
      */
     public function init_classes() {
-        $this->container['scripts'] = new Assets();
+        $this->container['scripts']         = new Assets();
+        $this->container['menu']            = new Admin\Menu();
+        $this->container['settings']        = new Admin\Settings();
+        $this->container['invoice_manager'] = new Admin\InvoiceManager();
     }
 
     /**

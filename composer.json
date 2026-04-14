@@ -14,6 +14,9 @@
             "homepage": "https://lunarbite.dev"
         }
     ],
+    "require": {
+        "tecnickcom/tcpdf": "^6.7"
+    },
     "minimum-stability": "dev",
     "require-dev": {
         "dealerdirect/phpcodesniffer-composer-installer": "^1.0",
