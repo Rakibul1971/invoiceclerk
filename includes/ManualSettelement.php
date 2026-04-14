@@ -1,6 +1,6 @@
 <?php
 
-namespace WeLabs\ManualSettelement;
+namespace LunarBite\ManualSettelement;
 
 /**
  * ManualSettelement class
@@ -237,8 +237,8 @@ final class ManualSettelement {
     /**
      * Get templates passing attributes and including the file.
      * You can use this method to load php template file by following:
-     * Example-1: welabs_manual_settelement()->get_template( 'admin/custom-meta-fields.php' );
-     * Example-2: welabs_manual_settelement()->get_template( 'admin/custom-meta-fields.php', [
+     * Example-1: lunarbite_manual_settelement()->get_template( 'admin/custom-meta-fields.php' );
+     * Example-2: lunarbite_manual_settelement()->get_template( 'admin/custom-meta-fields.php', [
 			'loop' => $loop,
 			'variation_data' => $variation_data,
 			'variation' => $variation

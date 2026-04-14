@@ -1,18 +1,18 @@
 <?php
 /**
  * Plugin Name: Manual Settelement
- * Plugin URI:  https://welabs.dev
+ * Plugin URI:  https://lunarbite.dev
  * Description: Generate batch invoices from WooCommerce orders and manage manual settlements with ease.
  * Version: 0.0.1
  * Author: lunarBite
- * Author URI: https://welabs.dev
+ * Author URI: https://lunarbite.dev
  * Text Domain: manual-settelement
  * WC requires at least: 5.0.0
  * Domain Path: /languages/
  * Requires Plugins: woocommerce
  * License: GPL2
  */
-use WeLabs\ManualSettelement\ManualSettelement;
+use LunarBite\ManualSettelement\ManualSettelement;
 
 // don't call the file directly
 if ( ! defined( 'ABSPATH' ) ) {
@@ -32,11 +32,11 @@ require_once __DIR__ . '/vendor/autoload.php';
 /**
  * Load Manual_Settelement Plugin when all plugins loaded
  *
- * @return \WeLabs\ManualSettelement\ManualSettelement
+ * @return \LunarBite\ManualSettelement\ManualSettelement
  */
-function welabs_manual_settelement() {
+function lunarbite_manual_settelement() {
     return ManualSettelement::init();
 }
 
 // Lets Go....
-welabs_manual_settelement();
+lunarbite_manual_settelement();

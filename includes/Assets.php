@@ -1,6 +1,6 @@
 <?php
 
-namespace WeLabs\ManualSettelement;
+namespace LunarBite\ManualSettelement;
 
 class Assets {
 	/**

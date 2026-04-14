@@ -1,17 +1,17 @@
 {
-    "name": "welabs/manual-settelement",
+    "name": "lunarbite/manual-settelement",
     "description": "Generate batch invoices from WooCommerce orders and manage manual settlements with ease.",
     "license": "GPL2",
     "autoload": {
         "psr-4": {
-            "WeLabs\\ManualSettelement\\": "includes/"
+            "LunarBite\\ManualSettelement\\": "includes/"
         }
     },
     "authors": [
         {
             "name": "lunarBite",
             "email": "shazolislam8@gmail.com",
-            "homepage": "https://welabs.dev"
+            "homepage": "https://lunarbite.dev"
         }
     ],
     "minimum-stability": "dev",
