@@ -26,9 +26,9 @@
                 <tr>
                     <th scope="row"><label for="start_date"><?php esc_html_e( 'Date Range', 'manual-settelement' ); ?></label></th>
                     <td>
-                        <input type="date" name="start_date" id="ms-start-date" required>
-                        <?php esc_html_e( 'to', 'manual-settelement' ); ?>
-                        <input type="date" name="end_date" id="ms-end-date" required>
+                        <input type="text" id="ms-date-range" class="regular-text" placeholder="<?php esc_attr_e( 'Select date range...', 'manual-settelement' ); ?>" required readonly>
+                        <input type="hidden" name="start_date" id="ms-start-date">
+                        <input type="hidden" name="end_date" id="ms-end-date">
                     </td>
                 </tr>
             </table>
@@ -67,6 +67,35 @@
 
 <script>
 jQuery(document).ready(function($) {
+    // Initialize Date Range Picker
+    $('#ms-date-range').daterangepicker({
+        autoUpdateInput: false,
+        locale: {
+            cancelLabel: 'Clear',
+            format: 'YYYY-MM-DD'
+        },
+        ranges: {
+           'Today': [moment(), moment()],
+           'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+           'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+           'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+           'This Month': [moment().startOf('month'), moment().endOf('month')],
+           'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+        }
+    });
+
+    $('#ms-date-range').on('apply.daterangepicker', function(ev, picker) {
+        $(this).val(picker.startDate.format('YYYY-MM-DD') + ' to ' + picker.endDate.format('YYYY-MM-DD'));
+        $('#ms-start-date').val(picker.startDate.format('YYYY-MM-DD'));
+        $('#ms-end-date').val(picker.endDate.format('YYYY-MM-DD'));
+    });
+
+    $('#ms-date-range').on('cancel.daterangepicker', function(ev, picker) {
+        $(this).val('');
+        $('#ms-start-date').val('');
+        $('#ms-end-date').val('');
+    });
+
     $('#ms-fetch-orders-form').on('submit', function(e) {
         e.preventDefault();
         
