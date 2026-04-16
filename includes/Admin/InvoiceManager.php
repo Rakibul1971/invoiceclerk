@@ -35,6 +35,12 @@ class InvoiceManager {
         }
 
         $allowed_statuses = get_option( 'ms_allowed_statuses', [] );
+        $handle_refunds   = get_option( 'ms_handle_refunds', 'no' );
+
+        if ( 'yes' === $handle_refunds && ! in_array( 'wc-refunded', $allowed_statuses ) ) {
+            $allowed_statuses[] = 'wc-refunded';
+        }
+
         if ( empty( $allowed_statuses ) ) {
             wp_send_json_error( __( 'No order statuses allowed in settings. Please check settings.', 'manual-settelement' ) );
         }
@@ -43,6 +49,7 @@ class InvoiceManager {
         $args = [
             'customer_id' => $customer_id,
             'status'      => $allowed_statuses,
+            'type'        => 'shop_order',
             'date_query'  => [
                 [
                     'after'     => $start_date,
@@ -54,19 +61,57 @@ class InvoiceManager {
         ];
 
         $orders = wc_get_orders( $args );
-        $eligible_orders = [];
+        $eligible_items = [];
 
         foreach ( $orders as $order ) {
             if ( ! $this->is_order_invoiced( $order->get_id() ) ) {
-                $eligible_orders[] = [
+                $eligible_items[] = [
                     'id'    => $order->get_id(),
                     'date'  => $order->get_date_created()->date( 'Y-m-d' ),
                     'total' => $order->get_total(),
+                    'type'  => 'order',
                 ];
             }
         }
 
-        wp_send_json_success( [ 'orders' => $eligible_orders ] );
+        // Fetch refunds if enabled
+        if ( 'yes' === $handle_refunds ) {
+            // Get all order IDs for this customer to find their refunds
+            $customer_order_ids = wc_get_orders( [
+                'customer_id' => $customer_id,
+                'limit'       => -1,
+                'return'      => 'ids',
+            ] );
+
+            if ( ! empty( $customer_order_ids ) ) {
+                $refund_args = [
+                    'type'       => 'shop_order_refund',
+                    'parent_id'  => $customer_order_ids,
+                    'date_query' => [
+                        [
+                            'after'     => $start_date,
+                            'before'    => $end_date,
+                            'inclusive' => true,
+                        ],
+                    ],
+                    'limit'      => -1,
+                ];
+                $refunds = wc_get_orders( $refund_args );
+
+                foreach ( $refunds as $refund ) {
+                    if ( ! $this->is_order_invoiced( $refund->get_id() ) ) {
+                        $eligible_items[] = [
+                            'id'    => $refund->get_id(),
+                            'date'  => $refund->get_date_created()->date( 'Y-m-d' ),
+                            'total' => '-' . $refund->get_amount(),
+                            'type'  => 'refund',
+                        ];
+                    }
+                }
+            }
+        }
+
+        wp_send_json_success( [ 'orders' => $eligible_items ] );
     }
 
     /**
@@ -138,6 +183,9 @@ class InvoiceManager {
             $order = wc_get_order( $order_id );
             if ( ! $order ) continue;
 
+            $is_refund = $order instanceof \WC_Order_Refund;
+            $item_type = $is_refund ? 'refund' : 'order';
+
             // Map order to invoice
             $wpdb->insert(
                 $wpdb->prefix . 'ms_invoice_order_mapping',
@@ -148,30 +196,57 @@ class InvoiceManager {
             );
 
             // Add items
-            foreach ( $order->get_items() as $item_id => $item ) {
-                $p_id = $item->get_product_id();
-                $name = $item->get_name();
-                $qty  = $item->get_quantity();
-                $line_subtotal = $item->get_subtotal();
-                $line_tax = $item->get_subtotal_tax();
-                $line_total = $item->get_total();
+            $items = $order->get_items();
+            
+            if ( empty( $items ) && $is_refund ) {
+                // If it's a refund with no line items, create a generic refund item
+                $line_total = $order->get_total(); // Usually negative
+                $tax_total_refund = $order->get_total_tax();
 
                 $wpdb->insert(
                     $wpdb->prefix . 'ms_invoice_items',
                     [
                         'invoice_id'   => $id,
                         'order_id'     => $order_id,
-                        'product_id'   => $p_id,
-                        'product_name' => $name,
-                        'quantity'     => $qty,
-                        'price'        => $line_subtotal / $qty,
+                        'item_type'    => 'refund',
+                        'product_id'   => 0,
+                        'product_name' => __( 'Refund for Order #', 'manual-settelement' ) . $order->get_parent_id(),
+                        'quantity'     => 1,
+                        'price'        => $line_total,
                         'line_total'   => $line_total,
                     ]
                 );
 
-                $subtotal  += $line_subtotal;
-                $tax_total += $line_tax;
+                $subtotal  += $line_total;
+                $tax_total += $tax_total_refund;
                 $total     += $line_total;
+            } else {
+                foreach ( $items as $item_id => $item ) {
+                    $p_id = $item->get_product_id();
+                    $name = $item->get_name();
+                    $qty  = $item->get_quantity();
+                    $line_subtotal = $item->get_subtotal();
+                    $line_tax = $item->get_subtotal_tax();
+                    $line_total = $item->get_total();
+
+                    $wpdb->insert(
+                        $wpdb->prefix . 'ms_invoice_items',
+                        [
+                            'invoice_id'   => $id,
+                            'order_id'     => $order_id,
+                            'item_type'    => $item_type,
+                            'product_id'   => $p_id,
+                            'product_name' => $name,
+                            'quantity'     => $qty,
+                            'price'        => $qty != 0 ? $line_subtotal / $qty : 0,
+                            'line_total'   => $line_total,
+                        ]
+                    );
+
+                    $subtotal  += $line_subtotal;
+                    $tax_total += $line_tax;
+                    $total     += $line_total;
+                }
             }
         }
 

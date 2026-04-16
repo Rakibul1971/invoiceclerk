@@ -62,6 +62,7 @@ class Installer {
             id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
             invoice_id bigint(20) UNSIGNED NOT NULL,
             order_id bigint(20) UNSIGNED NOT NULL,
+            item_type varchar(20) NOT NULL DEFAULT 'order',
             product_id bigint(20) UNSIGNED NOT NULL,
             product_name varchar(255) NOT NULL,
             quantity int(11) NOT NULL,

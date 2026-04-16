@@ -50,6 +50,7 @@
                 <tr>
                     <td id="cb" class="manage-column column-cb check-column"><input id="cb-select-all-1" type="checkbox"></td>
                     <th><?php esc_html_e( 'Order ID', 'manual-settelement' ); ?></th>
+                    <th><?php esc_html_e( 'Type', 'manual-settelement' ); ?></th>
                     <th><?php esc_html_e( 'Date', 'manual-settelement' ); ?></th>
                     <th><?php esc_html_e( 'Total', 'manual-settelement' ); ?></th>
                 </tr>
@@ -132,6 +133,7 @@ jQuery(document).ready(function($) {
                             html += `<tr>
                                 <th scope="row" class="check-column"><input type="checkbox" name="order_ids[]" value="${order.id}"></th>
                                 <td>#${order.id}</td>
+                                <td><span class="ms-type-badge ms-type-${order.type}">${order.type.toUpperCase()}</span></td>
                                 <td>${order.date}</td>
                                 <td>${order.total}</td>
                             </tr>`;

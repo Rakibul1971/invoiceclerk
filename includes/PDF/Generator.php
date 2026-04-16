@@ -23,7 +23,7 @@ class Generator {
             wp_die( __( 'Invoice not found.', 'manual-settelement' ) );
         }
 
-        $items = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$wpdb->prefix}ms_invoice_items WHERE invoice_id = %d", $invoice_id ) );
+        $items = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$wpdb->prefix}ms_invoice_items WHERE invoice_id = %d ORDER BY item_type ASC", $invoice_id ) );
         $customer = get_userdata( $invoice->customer_id );
         
         // Store Info
