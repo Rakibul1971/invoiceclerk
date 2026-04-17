@@ -170,7 +170,6 @@ final class ManualSettlement {
      * @return void
      */
     public function includes() {
-        // include_once STUB_PLUGIN_DIR . '/functions.php';
     }
 
     /**
@@ -266,7 +265,7 @@ final class ManualSettlement {
         $template_path = $this->get_template_path( $template_name );
 
         if ( ! file_exists( $template_path ) ) {
-            _doing_it_wrong( __FUNCTION__, sprintf( '<code>%s</code> does not exist.', esc_html( $template_path ) ), MANUAL_SETTLEMENT_PLUGIN_VERSION );
+            _doing_it_wrong( __FUNCTION__, sprintf( '<code>%s</code> does not exist.', esc_html( $template_path ) ), esc_html( MANUAL_SETTLEMENT_PLUGIN_VERSION ) );
 
             return;
         }

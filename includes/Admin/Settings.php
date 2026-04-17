@@ -93,9 +93,8 @@ class Settings {
             if ( $key === 'wc-refunded' ) {
                 continue;
             }
-            $checked = in_array( $key, $selected ) ? 'checked' : '';
             echo '<label style="display:block; margin-bottom:5px;">';
-            echo '<input type="checkbox" name="ms_allowed_statuses[]" value="' . esc_attr( $key ) . '" ' . $checked . '> ' . esc_html( $label );
+            echo '<input type="checkbox" name="ms_allowed_statuses[]" value="' . esc_attr( $key ) . '" ' . checked( in_array( $key, (array) $selected, true ), true, false ) . '> ' . esc_html( $label );
             echo '</label>';
         }
         echo '</div>';

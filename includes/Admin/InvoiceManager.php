@@ -32,18 +32,18 @@ class InvoiceManager {
         $end_date    = isset( $_POST['end_date'] ) ? sanitize_text_field( $_POST['end_date'] ) : '';
 
         if ( ! $customer_id ) {
-            wp_send_json_error( __( 'Invalid customer selected.', 'manual-settlement' ) );
+            wp_send_json_error( esc_html__( 'Invalid customer selected.', 'manual-settlement' ) );
         }
 
         $allowed_statuses = get_option( 'ms_allowed_statuses', [] );
         $handle_refunds   = get_option( 'ms_handle_refunds', 'no' );
 
-        if ( 'yes' === $handle_refunds && ! in_array( 'wc-refunded', $allowed_statuses ) ) {
+        if ( 'yes' === $handle_refunds && ! in_array( 'wc-refunded', $allowed_statuses, true ) ) {
             $allowed_statuses[] = 'wc-refunded';
         }
 
         if ( empty( $allowed_statuses ) ) {
-            wp_send_json_error( __( 'No order statuses allowed in settings. Please check settings.', 'manual-settlement' ) );
+            wp_send_json_error( esc_html__( 'No order statuses allowed in settings. Please check settings.', 'manual-settlement' ) );
         }
 
         // Fetch orders
@@ -123,8 +123,7 @@ class InvoiceManager {
      */
     public function is_order_invoiced( $order_id ) {
         global $wpdb;
-        $table = $wpdb->prefix . 'ms_invoice_order_mapping';
-        $exists = $wpdb->get_var( $wpdb->prepare( "SELECT id FROM $table WHERE order_id = %d", $order_id ) );
+        $exists = $wpdb->get_var( $wpdb->prepare( "SELECT id FROM {$wpdb->prefix}ms_invoice_order_mapping WHERE order_id = %d", $order_id ) );
         return (bool) $exists;
     }
 
@@ -134,8 +133,9 @@ class InvoiceManager {
      * @return void
      */
     public function create_invoice() {
-        if ( ! isset( $_POST['_wpnonce'] ) || ! wp_verify_nonce( $_POST['_wpnonce'], 'ms_create_invoice_nonce' ) ) {
-            wp_die( __( 'Security check failed.', 'manual-settlement' ) );
+        $nonce = isset( $_POST['_wpnonce'] ) ? sanitize_text_field( wp_unslash( $_POST['_wpnonce'] ) ) : '';
+        if ( ! wp_verify_nonce( $nonce, 'ms_create_invoice_nonce' ) ) {
+            wp_die( esc_html__( 'Security check failed.', 'manual-settlement' ) );
         }
 
         $customer_id = isset( $_POST['customer_id'] ) ? absint( $_POST['customer_id'] ) : 0;
@@ -211,7 +211,7 @@ class InvoiceManager {
                         'order_id'     => $order_id,
                         'item_type'    => 'refund',
                         'product_id'   => 0,
-                        'product_name' => __( 'Refund for Order #', 'manual-settlement' ) . $order->get_parent_id(),
+                        'product_name' => esc_html__( 'Refund for Order #', 'manual-settlement' ) . $order->get_parent_id(),
                         'quantity'     => 1,
                         'price'        => $line_total,
                         'line_total'   => $line_total,
@@ -263,7 +263,7 @@ class InvoiceManager {
                         'order_id'     => $order_id,
                         'item_type'    => 'shipping',
                         'product_id'   => 0,
-                        'product_name' => __( 'Shipping', 'manual-settlement' ),
+                        'product_name' => esc_html__( 'Shipping', 'manual-settlement' ),
                         'quantity'     => 1,
                         'price'        => $shipping_total,
                         'line_total'   => $shipping_total,
@@ -297,13 +297,14 @@ class InvoiceManager {
      * @return void
      */
     public function download_invoice() {
-        if ( ! isset( $_GET['_wpnonce'] ) || ! wp_verify_nonce( $_GET['_wpnonce'], 'ms_download_invoice_nonce' ) ) {
-            wp_die( __( 'Security check failed.', 'manual-settlement' ) );
+        $nonce = isset( $_GET['_wpnonce'] ) ? sanitize_text_field( wp_unslash( $_GET['_wpnonce'] ) ) : '';
+        if ( ! wp_verify_nonce( $nonce, 'ms_download_invoice_nonce' ) ) {
+            wp_die( esc_html__( 'Security check failed.', 'manual-settlement' ) );
         }
 
         $id = isset( $_GET['id'] ) ? absint( $_GET['id'] ) : 0;
         if ( ! $id ) {
-            wp_die( __( 'Invalid invoice ID.', 'manual-settlement' ) );
+            wp_die( esc_html__( 'Invalid invoice ID.', 'manual-settlement' ) );
         }
 
         $generator = new \LunarBite\ManualSettlement\PDF\Generator();
@@ -316,15 +317,16 @@ class InvoiceManager {
      * @return void
      */
     public function update_invoice_status() {
-        if ( ! isset( $_GET['_wpnonce'] ) || ! wp_verify_nonce( $_GET['_wpnonce'], 'ms_update_status_nonce' ) ) {
-            wp_die( __( 'Security check failed.', 'manual-settlement' ) );
+        $nonce = isset( $_GET['_wpnonce'] ) ? sanitize_text_field( wp_unslash( $_GET['_wpnonce'] ) ) : '';
+        if ( ! wp_verify_nonce( $nonce, 'ms_update_status_nonce' ) ) {
+            wp_die( esc_html__( 'Security check failed.', 'manual-settlement' ) );
         }
 
         $id     = isset( $_GET['id'] ) ? absint( $_GET['id'] ) : 0;
-        $status = isset( $_GET['status'] ) ? sanitize_text_field( $_GET['status'] ) : '';
+        $status = isset( $_GET['status'] ) ? sanitize_text_field( wp_unslash( $_GET['status'] ) ) : '';
 
-        if ( ! $id || ! in_array( $status, [ 'draft', 'paid', 'sent' ] ) ) {
-            wp_die( __( 'Invalid request.', 'manual-settlement' ) );
+        if ( ! $id || ! in_array( $status, [ 'draft', 'paid', 'sent' ], true ) ) {
+            wp_die( esc_html__( 'Invalid request.', 'manual-settlement' ) );
         }
 
         global $wpdb;
@@ -344,13 +346,14 @@ class InvoiceManager {
      * @return void
      */
     public function delete_invoice() {
-        if ( ! isset( $_GET['_wpnonce'] ) || ! wp_verify_nonce( $_GET['_wpnonce'], 'ms_delete_invoice_nonce' ) ) {
-            wp_die( __( 'Security check failed.', 'manual-settlement' ) );
+        $nonce = isset( $_GET['_wpnonce'] ) ? sanitize_text_field( wp_unslash( $_GET['_wpnonce'] ) ) : '';
+        if ( ! wp_verify_nonce( $nonce, 'ms_delete_invoice_nonce' ) ) {
+            wp_die( esc_html__( 'Security check failed.', 'manual-settlement' ) );
         }
 
         $id = isset( $_GET['id'] ) ? absint( $_GET['id'] ) : 0;
         if ( ! $id ) {
-            wp_die( __( 'Invalid request.', 'manual-settlement' ) );
+            wp_die( esc_html__( 'Invalid request.', 'manual-settlement' ) );
         }
 
         global $wpdb;
@@ -374,7 +377,7 @@ class InvoiceManager {
             exit;
         } catch ( \Exception $e ) {
             $wpdb->query( 'ROLLBACK' );
-            wp_die( __( 'Failed to delete invoice.', 'manual-settlement' ) );
+            wp_die( esc_html__( 'Failed to delete invoice.', 'manual-settlement' ) );
         }
     }
 }

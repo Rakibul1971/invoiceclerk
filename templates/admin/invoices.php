@@ -5,27 +5,28 @@ defined( 'ABSPATH' ) || exit;
  */
 
 global $wpdb;
-$table = $wpdb->prefix . 'ms_invoices';
-$invoices = $wpdb->get_results( "SELECT * FROM $table ORDER BY created_at DESC" );
+$invoices = $wpdb->get_results( "SELECT * FROM {$wpdb->prefix}ms_invoices ORDER BY created_at DESC" );
 ?>
 <div class="wrap">
     <h1 class="wp-heading-inline"><?php esc_html_e( 'Invoices', 'manual-settlement' ); ?></h1>
     <a href="<?php echo esc_url( admin_url( 'admin.php?page=ms-create-invoice' ) ); ?>" class="page-title-action"><?php esc_html_e( 'Add New', 'manual-settlement' ); ?></a>
     <hr class="wp-header-end">
 
-    <?php if ( isset( $_GET['message'] ) && $_GET['message'] === 'invoice_created' ) : ?>
+    <?php 
+    $message = isset( $_GET['message'] ) ? sanitize_text_field( wp_unslash( $_GET['message'] ) ) : '';
+    if ( $message === 'invoice_created' ) : ?>
         <div class="notice notice-success is-dismissible">
             <p><?php esc_html_e( 'Invoice created successfully.', 'manual-settlement' ); ?></p>
         </div>
     <?php endif; ?>
 
-    <?php if ( isset( $_GET['message'] ) && $_GET['message'] === 'status_updated' ) : ?>
+    <?php if ( $message === 'status_updated' ) : ?>
         <div class="notice notice-success is-dismissible">
             <p><?php esc_html_e( 'Invoice status updated successfully.', 'manual-settlement' ); ?></p>
         </div>
     <?php endif; ?>
 
-    <?php if ( isset( $_GET['message'] ) && $_GET['message'] === 'invoice_deleted' ) : ?>
+    <?php if ( $message === 'invoice_deleted' ) : ?>
         <div class="notice notice-info is-dismissible">
             <p><?php esc_html_e( 'Invoice and related data deleted successfully.', 'manual-settlement' ); ?></p>
         </div>

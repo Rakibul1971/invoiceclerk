@@ -21,7 +21,7 @@ class MS_PDF extends TCPDF {
                 <td width="60%">
                     <span style="font-size:20px; font-weight:bold; color:#B8860B;">' . strtoupper( esc_html( $this->header_data['store_name'] ) ) . '</span><br><br><br>
                     <span style="font-size:9px; line-height:1.5;">
-                        ' . date( 'j F Y' ) . '<br>
+                        ' . gmdate( 'j F Y' ) . '<br>
                         E-Mail: ' . esc_html( $this->header_data['store_email'] ) . '
                     </span>
                 </td>
@@ -87,7 +87,7 @@ class Generator {
 
         $invoice = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$wpdb->prefix}ms_invoices WHERE id = %d", $invoice_id ) );
         if ( ! $invoice ) {
-            wp_die( __( 'Invoice not found.', 'manual-settlement' ) );
+            wp_die( esc_html__( 'Invoice not found.', 'manual-settlement' ) );
         }
 
         $items = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$wpdb->prefix}ms_invoice_items WHERE invoice_id = %d ORDER BY order_id ASC, item_type ASC", $invoice_id ) );
@@ -160,7 +160,7 @@ class Generator {
         <table cellpadding="4" cellspacing="0" border="0" style="border-top:1px solid #000; border-bottom:1px solid #000;">
             <tr>
                 <td width="55%"><span style="font-size:12px; font-weight:bold;">Invoice No. ' . $invoice->invoice_number . '</span></td>
-                <td width="45%" align="right"><span style="font-size:10px; font-weight:bold;">' . date( 'd.m.Y', strtotime( $invoice->start_date ) ) . ' to ' . date( 'd.m.Y', strtotime( $invoice->end_date ) ) . '</span></td>
+                <td width="45%" align="right"><span style="font-size:10px; font-weight:bold;">' . gmdate( 'd.m.Y', strtotime( $invoice->start_date ) ) . ' to ' . gmdate( 'd.m.Y', strtotime( $invoice->end_date ) ) . '</span></td>
             </tr>
         </table>';
 
