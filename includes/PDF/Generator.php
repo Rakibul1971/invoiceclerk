@@ -8,11 +8,47 @@ use TCPDF;
  * PDF Generator class
  */
 class MS_PDF extends TCPDF {
+    public $header_data = [];
     public $footer_data = [];
 
+    public function Header() {
+        $this->SetY(15);
+        $this->SetFont('helvetica', '', 10);
+        $html = '
+        <table cellpadding="0" cellspacing="0" border="0" width="100%">
+            <tr>
+                <td width="60%">
+                    <span style="font-size:24px; font-weight:bold; color:#B8860B;">' . strtoupper( $this->header_data['store_name'] ) . '</span><br><br><br>
+                    <span style="font-size:10px; line-height:1.5;">
+                        ' . date( 'j F Y' ) . '<br>
+                        E-Mail: ' . $this->header_data['store_email'] . '
+                    </span>
+                </td>
+                <td width="40%" align="right">
+                    <span style="font-size:8px; border-bottom: 0.5px solid #000;">' . $this->header_data['store_name'] . ', ' . $this->header_data['store_address'] . ', ' . $this->header_data['store_postcode'] . ' ' . $this->header_data['store_city'] . '</span><br><br>
+                    <span style="font-size:12px; font-weight:bold;">' . $this->header_data['customer_name'] . '</span><br>
+                    <span style="font-size:11px;">
+                        ' . $this->header_data['customer_address'] . '<br>
+                        ' . $this->header_data['customer_city'] . '<br>
+                        Customer No: ' . $this->header_data['customer_id'] . '
+                    </span>
+                </td>
+            </tr>
+        </table>';
+        $this->writeHTML($html, true, false, true, false, '');
+    }
+
     public function Footer() {
-        $this->SetY(-25);
+        $this->SetY(-40);
         $this->SetFont('helvetica', '', 8);
+        $this->SetTextColor(0, 0, 0);
+        
+        // Footer Message
+        if ( ! empty( $this->footer_data['footer_text'] ) ) {
+            $this->writeHTML('<span style="font-size:10px;">' . nl2br( esc_html( $this->footer_data['footer_text'] ) ) . '</span>', true, false, true, false, '');
+            $this->Ln(2);
+        }
+
         $this->SetTextColor(85, 85, 85);
         $html = '
         <table cellpadding="0" cellspacing="0" border="0" width="100%" style="border-top:1px solid #ccc;">
@@ -80,13 +116,25 @@ class Generator {
 
         // Create new PDF document
         $pdf = new MS_PDF( PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false );
+        $pdf->header_data = [
+            'store_name'       => $store_name,
+            'store_address'    => $store_address,
+            'store_postcode'   => $store_postcode,
+            'store_city'       => $store_city,
+            'store_email'      => $store_email,
+            'customer_name'    => $customer_display_name,
+            'customer_address' => $billing_address_1,
+            'customer_city'    => $billing_postcode . ' ' . $billing_city,
+            'customer_id'      => $customer_id,
+        ];
         $pdf->footer_data = [
-            'store_name'    => $store_name,
-            'store_address' => $store_address,
+            'store_name'     => $store_name,
+            'store_address'  => $store_address,
             'store_postcode' => $store_postcode,
-            'store_city'    => $store_city,
-            'store_email'   => $store_email,
-            'home_url'      => home_url(),
+            'store_city'     => $store_city,
+            'store_email'    => $store_email,
+            'footer_text'    => $footer_text,
+            'home_url'       => home_url(),
         ];
 
         // Set document information
@@ -94,42 +142,17 @@ class Generator {
         $pdf->SetAuthor( 'LunarBite' );
         $pdf->SetTitle( $invoice->invoice_number );
 
-        $pdf->setPrintHeader( false );
+        $pdf->setPrintHeader( true );
         $pdf->setPrintFooter( true );
-        $pdf->SetMargins( 15, 15, 15 );
-        $pdf->SetAutoPageBreak( TRUE, 35 );
+        $pdf->SetMargins( 15, 60, 15 ); 
+        $pdf->SetAutoPageBreak( TRUE, 50 ); // Increase bottom margin for larger footer
 
         // Add a page
         $pdf->AddPage();
 
-        // Custom Header
-        $header_html = '
-        <table cellpadding="0" cellspacing="0" border="0" width="100%">
-            <tr>
-                <td width="60%">
-                    <span style="font-size:24px; font-weight:bold; color:#B8860B;">' . strtoupper( $store_name ) . '</span><br><br><br>
-                    <span style="font-size:10px; line-height:1.5;">
-                        ' . date( 'j F Y' ) . '<br>
-                        E-Mail: ' . $store_email . '
-                    </span>
-                </td>
-                <td width="40%" align="right">
-                    <span style="font-size:8px; border-bottom: 0.5px solid #000;">' . $store_name . ', ' . $store_address . ', ' . $store_postcode . ' ' . $store_city . '</span><br><br>
-                    <span style="font-size:12px; font-weight:bold;">' . $customer_display_name . '</span><br>
-                    <span style="font-size:11px;">
-                        ' . $billing_address_1 . '<br>
-                        ' . $billing_postcode . ' ' . $billing_city . '<br>
-                        Customer No: ' . $customer_id . '
-                    </span>
-                </td>
-            </tr>
-        </table>';
-
-        $pdf->writeHTML( $header_html, true, false, true, false, '' );
-
         // Title Section
         $title_html = '
-        <br><br><br>
+        <br>
         <table cellpadding="5" cellspacing="0" border="0" style="border-top:1px solid #000; border-bottom:1px solid #000;">
             <tr>
                 <td width="55%"><span style="font-size:14px; font-weight:bold;">Invoice No. ' . $invoice->invoice_number . '</span></td>
@@ -175,26 +198,20 @@ class Generator {
         $pdf->writeHTML( $items_html, true, false, true, false, '' );
 
         // Totals Section
+        $pdf->SetY(-60);
         $totals_html = '
-        <br><br>
         <table cellpadding="5" cellspacing="0" border="0" style="border-top:1px solid #000;">
             <tr>
-                <td width="60%">
-                    <span style="font-size:10px;">
-                        VAT Code B incl. ' . ( $invoice->subtotal != 0 ? number_format( (abs($invoice->tax_total) / abs($invoice->subtotal)) * 100, 1 ) : '0' ) . '% ' . number_format( $invoice->tax_total, 2 ) . '
-                    </span>
+                <td width="50%">
+                    <span style="font-size:14px; font-weight:bold;">Total Amount to Pay</span>
                 </td>
-                <td width="40%" align="right">
+                <td width="50%" align="right">
                     <span style="font-size:16px; font-weight:bold;">' . wp_strip_all_tags( wc_price( $invoice->total ) ) . '</span>
                 </td>
             </tr>
         </table>';
 
         $pdf->writeHTML( $totals_html, true, false, true, false, '' );
-
-        // Footer Message
-        $msg_html = '<br><br><span style="font-size:11px;">' . nl2br( esc_html( $footer_text ) ) . '</span>';
-        $pdf->writeHTML( $msg_html, true, false, true, false, '' );
 
         // Close and output PDF document
         $pdf->Output( $invoice->invoice_number . '.pdf', 'D' );
