@@ -189,9 +189,11 @@ class Generator {
                     </tr>';
             }
 
+            $qty_display = ( $item->item_type === 'shipping' ) ? '' : number_format( $item->quantity, 2 );
+
             $items_html .= '
                 <tr>
-                    <td width="10%" align="right" style="font-size:9px;">' . number_format( $item->quantity, 2 ) . '</td>
+                    <td width="10%" align="right" style="font-size:9px;">' . $qty_display . '</td>
                     <td width="70%" style="font-size:9px;">' . esc_html( $item->product_name ) . '</td>
                     <td width="20%" align="right" style="font-size:9px;">' . wp_strip_all_tags( wc_price( $item->line_total ) ) . '</td>
                 </tr>';
