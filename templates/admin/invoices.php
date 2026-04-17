@@ -16,19 +16,19 @@ $invoices = $wpdb->get_results( "SELECT * FROM {$wpdb->prefix}ms_invoices ORDER 
     <?php 
     // phpcs:ignore WordPress.Security.NonceVerification.Recommended
     $message = isset( $_GET['message'] ) ? sanitize_text_field( wp_unslash( $_GET['message'] ) ) : '';
-    if ( $message === 'invoice_created' ) : ?>
+    if ( 'invoice_created' === $message ) : ?>
         <div class="notice notice-success is-dismissible">
             <p><?php esc_html_e( 'Invoice created successfully.', 'manual-settlement' ); ?></p>
         </div>
     <?php endif; ?>
 
-    <?php if ( $message === 'status_updated' ) : ?>
+    <?php if ( 'status_updated' === $message ) : ?>
         <div class="notice notice-success is-dismissible">
             <p><?php esc_html_e( 'Invoice status updated successfully.', 'manual-settlement' ); ?></p>
         </div>
     <?php endif; ?>
 
-    <?php if ( $message === 'invoice_deleted' ) : ?>
+    <?php if ( 'invoice_deleted' === $message ) : ?>
         <div class="notice notice-info is-dismissible">
             <p><?php esc_html_e( 'Invoice and related data deleted successfully.', 'manual-settlement' ); ?></p>
         </div>
