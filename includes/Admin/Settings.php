@@ -1,6 +1,7 @@
 <?php
+namespace LunarBite\ManualSettlement\Admin;
 
-namespace LunarBite\ManualSettelement\Admin;
+defined( 'ABSPATH' ) || exit;
 
 /**
  * Settings class
@@ -26,14 +27,14 @@ class Settings {
 
         add_settings_section(
             'ms_general_section',
-            __( 'General Settings', 'manual-settelement' ),
+            __( 'General Settings', 'manual-settlement' ),
             null,
             'ms-settings'
         );
 
         add_settings_field(
             'ms_handle_refunds',
-            __( 'Handle Refunds', 'manual-settelement' ),
+            __( 'Handle Refunds', 'manual-settlement' ),
             [ $this, 'handle_refunds_callback' ],
             'ms-settings',
             'ms_general_section'
@@ -41,7 +42,7 @@ class Settings {
 
         add_settings_field(
             'ms_footer_text',
-            __( 'Invoice Footer Text', 'manual-settelement' ),
+            __( 'Invoice Footer Text', 'manual-settlement' ),
             [ $this, 'footer_text_callback' ],
             'ms-settings',
             'ms_general_section'
@@ -49,7 +50,7 @@ class Settings {
 
         add_settings_field(
             'ms_allowed_statuses',
-            __( 'Allowed Order Statuses', 'manual-settelement' ),
+            __( 'Allowed Order Statuses', 'manual-settlement' ),
             [ $this, 'allowed_statuses_callback' ],
             'ms-settings',
             'ms_general_section'
@@ -64,7 +65,7 @@ class Settings {
     public function footer_text_callback() {
         $value = get_option( 'ms_footer_text', '' );
         echo '<textarea name="ms_footer_text" rows="5" cols="50" class="large-text">' . esc_textarea( $value ) . '</textarea>';
-        echo '<p class="description">' . esc_html__( 'Text to appear in the footer of the generated PDF invoice.', 'manual-settelement' ) . '</p>';
+        echo '<p class="description">' . esc_html__( 'Text to appear in the footer of the generated PDF invoice.', 'manual-settlement' ) . '</p>';
     }
 
     /**
@@ -74,8 +75,8 @@ class Settings {
      */
     public function handle_refunds_callback() {
         $value = get_option( 'ms_handle_refunds', 'no' );
-        echo '<label><input type="checkbox" name="ms_handle_refunds" value="yes" ' . checked( 'yes', $value, false ) . '> ' . esc_html__( 'Enable separate refund handling in invoices', 'manual-settelement' ) . '</label>';
-        echo '<p class="description">' . esc_html__( 'When enabled, refunds within the selected date range will be included as negative items in the invoice.', 'manual-settelement' ) . '</p>';
+        echo '<label><input type="checkbox" name="ms_handle_refunds" value="yes" ' . checked( 'yes', $value, false ) . '> ' . esc_html__( 'Enable separate refund handling in invoices', 'manual-settlement' ) . '</label>';
+        echo '<p class="description">' . esc_html__( 'When enabled, refunds within the selected date range will be included as negative items in the invoice.', 'manual-settlement' ) . '</p>';
     }
 
     /**
@@ -98,6 +99,6 @@ class Settings {
             echo '</label>';
         }
         echo '</div>';
-        echo '<p class="description">' . esc_html__( 'Select which WooCommerce order statuses are eligible for manual settlement.', 'manual-settelement' ) . '</p>';
+        echo '<p class="description">' . esc_html__( 'Select which WooCommerce order statuses are eligible for manual settlement.', 'manual-settlement' ) . '</p>';
     }
 }

@@ -1,6 +1,7 @@
 <?php
+namespace LunarBite\ManualSettlement\Admin;
 
-namespace LunarBite\ManualSettelement\Admin;
+defined( 'ABSPATH' ) || exit;
 
 /**
  * InvoiceManager class
@@ -31,7 +32,7 @@ class InvoiceManager {
         $end_date    = isset( $_POST['end_date'] ) ? sanitize_text_field( $_POST['end_date'] ) : '';
 
         if ( ! $customer_id ) {
-            wp_send_json_error( __( 'Invalid customer selected.', 'manual-settelement' ) );
+            wp_send_json_error( __( 'Invalid customer selected.', 'manual-settlement' ) );
         }
 
         $allowed_statuses = get_option( 'ms_allowed_statuses', [] );
@@ -42,7 +43,7 @@ class InvoiceManager {
         }
 
         if ( empty( $allowed_statuses ) ) {
-            wp_send_json_error( __( 'No order statuses allowed in settings. Please check settings.', 'manual-settelement' ) );
+            wp_send_json_error( __( 'No order statuses allowed in settings. Please check settings.', 'manual-settlement' ) );
         }
 
         // Fetch orders
@@ -134,7 +135,7 @@ class InvoiceManager {
      */
     public function create_invoice() {
         if ( ! isset( $_POST['_wpnonce'] ) || ! wp_verify_nonce( $_POST['_wpnonce'], 'ms_create_invoice_nonce' ) ) {
-            wp_die( __( 'Security check failed.', 'manual-settelement' ) );
+            wp_die( __( 'Security check failed.', 'manual-settlement' ) );
         }
 
         $customer_id = isset( $_POST['customer_id'] ) ? absint( $_POST['customer_id'] ) : 0;
@@ -210,7 +211,7 @@ class InvoiceManager {
                         'order_id'     => $order_id,
                         'item_type'    => 'refund',
                         'product_id'   => 0,
-                        'product_name' => __( 'Refund for Order #', 'manual-settelement' ) . $order->get_parent_id(),
+                        'product_name' => __( 'Refund for Order #', 'manual-settlement' ) . $order->get_parent_id(),
                         'quantity'     => 1,
                         'price'        => $line_total,
                         'line_total'   => $line_total,
@@ -262,7 +263,7 @@ class InvoiceManager {
                         'order_id'     => $order_id,
                         'item_type'    => 'shipping',
                         'product_id'   => 0,
-                        'product_name' => __( 'Shipping', 'manual-settelement' ),
+                        'product_name' => __( 'Shipping', 'manual-settlement' ),
                         'quantity'     => 1,
                         'price'        => $shipping_total,
                         'line_total'   => $shipping_total,
@@ -286,7 +287,7 @@ class InvoiceManager {
             [ 'id' => $id ]
         );
 
-        wp_redirect( admin_url( 'admin.php?page=manual-settelement&message=invoice_created' ) );
+        wp_redirect( admin_url( 'admin.php?page=manual-settlement&message=invoice_created' ) );
         exit;
     }
 
@@ -297,15 +298,15 @@ class InvoiceManager {
      */
     public function download_invoice() {
         if ( ! isset( $_GET['_wpnonce'] ) || ! wp_verify_nonce( $_GET['_wpnonce'], 'ms_download_invoice_nonce' ) ) {
-            wp_die( __( 'Security check failed.', 'manual-settelement' ) );
+            wp_die( __( 'Security check failed.', 'manual-settlement' ) );
         }
 
         $id = isset( $_GET['id'] ) ? absint( $_GET['id'] ) : 0;
         if ( ! $id ) {
-            wp_die( __( 'Invalid invoice ID.', 'manual-settelement' ) );
+            wp_die( __( 'Invalid invoice ID.', 'manual-settlement' ) );
         }
 
-        $generator = new \LunarBite\ManualSettelement\PDF\Generator();
+        $generator = new \LunarBite\ManualSettlement\PDF\Generator();
         $generator->generate( $id );
     }
 
@@ -316,14 +317,14 @@ class InvoiceManager {
      */
     public function update_invoice_status() {
         if ( ! isset( $_GET['_wpnonce'] ) || ! wp_verify_nonce( $_GET['_wpnonce'], 'ms_update_status_nonce' ) ) {
-            wp_die( __( 'Security check failed.', 'manual-settelement' ) );
+            wp_die( __( 'Security check failed.', 'manual-settlement' ) );
         }
 
         $id     = isset( $_GET['id'] ) ? absint( $_GET['id'] ) : 0;
         $status = isset( $_GET['status'] ) ? sanitize_text_field( $_GET['status'] ) : '';
 
         if ( ! $id || ! in_array( $status, [ 'draft', 'paid', 'sent' ] ) ) {
-            wp_die( __( 'Invalid request.', 'manual-settelement' ) );
+            wp_die( __( 'Invalid request.', 'manual-settlement' ) );
         }
 
         global $wpdb;
@@ -333,7 +334,7 @@ class InvoiceManager {
             [ 'id' => $id ]
         );
 
-        wp_redirect( admin_url( 'admin.php?page=manual-settelement&message=status_updated' ) );
+        wp_redirect( admin_url( 'admin.php?page=manual-settlement&message=status_updated' ) );
         exit;
     }
 
@@ -344,12 +345,12 @@ class InvoiceManager {
      */
     public function delete_invoice() {
         if ( ! isset( $_GET['_wpnonce'] ) || ! wp_verify_nonce( $_GET['_wpnonce'], 'ms_delete_invoice_nonce' ) ) {
-            wp_die( __( 'Security check failed.', 'manual-settelement' ) );
+            wp_die( __( 'Security check failed.', 'manual-settlement' ) );
         }
 
         $id = isset( $_GET['id'] ) ? absint( $_GET['id'] ) : 0;
         if ( ! $id ) {
-            wp_die( __( 'Invalid request.', 'manual-settelement' ) );
+            wp_die( __( 'Invalid request.', 'manual-settlement' ) );
         }
 
         global $wpdb;
@@ -369,11 +370,11 @@ class InvoiceManager {
 
             $wpdb->query( 'COMMIT' );
             
-            wp_redirect( admin_url( 'admin.php?page=manual-settelement&message=invoice_deleted' ) );
+            wp_redirect( admin_url( 'admin.php?page=manual-settlement&message=invoice_deleted' ) );
             exit;
         } catch ( \Exception $e ) {
             $wpdb->query( 'ROLLBACK' );
-            wp_die( __( 'Failed to delete invoice.', 'manual-settelement' ) );
+            wp_die( __( 'Failed to delete invoice.', 'manual-settlement' ) );
         }
     }
 }

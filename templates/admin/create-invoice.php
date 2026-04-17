@@ -1,19 +1,20 @@
 <?php
+defined( 'ABSPATH' ) || exit;
 /**
  * Create Invoice Template
  */
 ?>
 <div class="wrap">
-    <h1><?php esc_html_e( 'Create New Invoice', 'manual-settelement' ); ?></h1>
+    <h1><?php esc_html_e( 'Create New Invoice', 'manual-settlement' ); ?></h1>
 
     <div class="card" style="max-width: 100%; margin-top: 20px; padding: 20px;">
         <form id="ms-fetch-orders-form">
             <table class="form-table">
                 <tr>
-                    <th scope="row"><label for="customer_id"><?php esc_html_e( 'Select Customer', 'manual-settelement' ); ?></label></th>
+                    <th scope="row"><label for="customer_id"><?php esc_html_e( 'Select Customer', 'manual-settlement' ); ?></label></th>
                     <td>
                         <select name="customer_id" id="ms-customer-id" class="regular-text" required>
-                            <option value=""><?php esc_html_e( 'Select a customer...', 'manual-settelement' ); ?></option>
+                            <option value=""><?php esc_html_e( 'Select a customer...', 'manual-settlement' ); ?></option>
                             <?php
                             $customers = get_users( [ 'role' => 'customer' ] );
                             foreach ( $customers as $customer ) {
@@ -24,16 +25,16 @@
                     </td>
                 </tr>
                 <tr>
-                    <th scope="row"><label for="start_date"><?php esc_html_e( 'Date Range', 'manual-settelement' ); ?></label></th>
+                    <th scope="row"><label for="start_date"><?php esc_html_e( 'Date Range', 'manual-settlement' ); ?></label></th>
                     <td>
-                        <input type="text" id="ms-date-range" class="regular-text" placeholder="<?php esc_attr_e( 'Select date range...', 'manual-settelement' ); ?>" required readonly>
+                        <input type="text" id="ms-date-range" class="regular-text" placeholder="<?php esc_attr_e( 'Select date range...', 'manual-settlement' ); ?>" required readonly>
                         <input type="hidden" name="start_date" id="ms-start-date">
                         <input type="hidden" name="end_date" id="ms-end-date">
                     </td>
                 </tr>
             </table>
             <p class="submit">
-                <button type="submit" class="button button-primary" id="ms-fetch-orders-btn"><?php esc_html_e( 'Fetch Orders', 'manual-settelement' ); ?></button>
+                <button type="submit" class="button button-primary" id="ms-fetch-orders-btn"><?php esc_html_e( 'Fetch Orders', 'manual-settlement' ); ?></button>
             </p>
         </form>
     </div>
@@ -49,10 +50,10 @@
             <thead>
                 <tr>
                     <td id="cb" class="manage-column column-cb check-column"><input id="cb-select-all-1" type="checkbox"></td>
-                    <th><?php esc_html_e( 'Order ID', 'manual-settelement' ); ?></th>
-                    <th><?php esc_html_e( 'Type', 'manual-settelement' ); ?></th>
-                    <th><?php esc_html_e( 'Date', 'manual-settelement' ); ?></th>
-                    <th><?php esc_html_e( 'Total', 'manual-settelement' ); ?></th>
+                    <th><?php esc_html_e( 'Order ID', 'manual-settlement' ); ?></th>
+                    <th><?php esc_html_e( 'Type', 'manual-settlement' ); ?></th>
+                    <th><?php esc_html_e( 'Date', 'manual-settlement' ); ?></th>
+                    <th><?php esc_html_e( 'Total', 'manual-settlement' ); ?></th>
                 </tr>
             </thead>
             <tbody id="ms-orders-list">
@@ -61,7 +62,7 @@
         </table>
 
         <p class="submit">
-            <button type="submit" class="button button-primary"><?php esc_html_e( 'Generate Invoice', 'manual-settelement' ); ?></button>
+            <button type="submit" class="button button-primary"><?php esc_html_e( 'Generate Invoice', 'manual-settlement' ); ?></button>
         </p>
     </form>
 </div>
@@ -106,27 +107,27 @@ jQuery(document).ready(function($) {
 
         if (!customerId || !startDate || !endDate) return;
 
-        $('#ms-fetch-orders-btn').prop('disabled', true).text('<?php esc_html_e( 'Fetching...', 'manual-settelement' ); ?>');
+        $('#ms-fetch-orders-btn').prop('disabled', true).text('<?php esc_html_e( 'Fetching...', 'manual-settlement' ); ?>');
 
         $.ajax({
-            url: Manual_Settelement_Admin.ajax_url,
+            url: Manual_Settlement_Admin.ajax_url,
             type: 'POST',
             data: {
                 action: 'ms_fetch_orders',
-                nonce: Manual_Settelement_Admin.nonce,
+                nonce: Manual_Settlement_Admin.nonce,
                 customer_id: customerId,
                 start_date: startDate,
                 end_date: endDate
             },
             success: function(response) {
-                $('#ms-fetch-orders-btn').prop('disabled', false).text('<?php esc_html_e( 'Fetch Orders', 'manual-settelement' ); ?>');
+                $('#ms-fetch-orders-btn').prop('disabled', false).text('<?php esc_html_e( 'Fetch Orders', 'manual-settlement' ); ?>');
                 
                 if (response.success) {
                     const orders = response.data.orders;
                     let html = '';
 
                     if (orders.length === 0) {
-                        html = '<tr><td colspan="4"><?php esc_html_e( 'No eligible orders found for this customer in the selected date range.', 'manual-settelement' ); ?></td></tr>';
+                        html = '<tr><td colspan="4"><?php esc_html_e( 'No eligible orders found for this customer in the selected date range.', 'manual-settlement' ); ?></td></tr>';
                         $('#ms-create-invoice-form').hide();
                     } else {
                         orders.forEach(function(order) {

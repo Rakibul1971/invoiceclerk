@@ -1,6 +1,7 @@
 <?php
+namespace LunarBite\ManualSettlement\PDF;
 
-namespace LunarBite\ManualSettelement\PDF;
+defined( 'ABSPATH' ) || exit;
 
 use TCPDF;
 
@@ -18,19 +19,19 @@ class MS_PDF extends TCPDF {
         <table cellpadding="0" cellspacing="0" border="0" width="100%">
             <tr>
                 <td width="60%">
-                    <span style="font-size:20px; font-weight:bold; color:#B8860B;">' . strtoupper( $this->header_data['store_name'] ) . '</span><br><br><br>
+                    <span style="font-size:20px; font-weight:bold; color:#B8860B;">' . strtoupper( esc_html( $this->header_data['store_name'] ) ) . '</span><br><br><br>
                     <span style="font-size:9px; line-height:1.5;">
                         ' . date( 'j F Y' ) . '<br>
-                        E-Mail: ' . $this->header_data['store_email'] . '
+                        E-Mail: ' . esc_html( $this->header_data['store_email'] ) . '
                     </span>
                 </td>
                 <td width="40%" align="right">
-                    <span style="font-size:8px; border-bottom: 0.5px solid #000;">' . $this->header_data['store_name'] . ', ' . $this->header_data['store_address'] . ', ' . $this->header_data['store_postcode'] . ' ' . $this->header_data['store_city'] . '</span><br><br>
-                    <span style="font-size:10px; font-weight:bold;">' . $this->header_data['customer_name'] . '</span><br>
+                    <span style="font-size:8px; border-bottom: 0.5px solid #000;">' . esc_html( $this->header_data['store_name'] ) . ', ' . esc_html( $this->header_data['store_address'] ) . ', ' . esc_html( $this->header_data['store_postcode'] ) . ' ' . esc_html( $this->header_data['store_city'] ) . '</span><br><br>
+                    <span style="font-size:10px; font-weight:bold;">' . esc_html( $this->header_data['customer_name'] ) . '</span><br>
                     <span style="font-size:9px;">
-                        ' . $this->header_data['customer_address'] . '<br>
-                        ' . $this->header_data['customer_city'] . '<br>
-                        Customer No: ' . $this->header_data['customer_id'] . '
+                        ' . esc_html( $this->header_data['customer_address'] ) . '<br>
+                        ' . esc_html( $this->header_data['customer_city'] ) . '<br>
+                        Customer No: ' . esc_html( $this->header_data['customer_id'] ) . '
                     </span>
                 </td>
             </tr>
@@ -86,7 +87,7 @@ class Generator {
 
         $invoice = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$wpdb->prefix}ms_invoices WHERE id = %d", $invoice_id ) );
         if ( ! $invoice ) {
-            wp_die( __( 'Invoice not found.', 'manual-settelement' ) );
+            wp_die( __( 'Invoice not found.', 'manual-settlement' ) );
         }
 
         $items = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$wpdb->prefix}ms_invoice_items WHERE invoice_id = %d ORDER BY order_id ASC, item_type ASC", $invoice_id ) );

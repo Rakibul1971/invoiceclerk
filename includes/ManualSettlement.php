@@ -1,13 +1,14 @@
 <?php
+namespace LunarBite\ManualSettlement;
 
-namespace LunarBite\ManualSettelement;
+defined( 'ABSPATH' ) || exit;
 
 /**
- * ManualSettelement class
+ * ManualSettlement class
  *
- * @class ManualSettelement The class that holds the entire ManualSettelement plugin
+ * @class ManualSettlement The class that holds the entire ManualSettlement plugin
  */
-final class ManualSettelement {
+final class ManualSettlement {
 
     /**
      * Plugin version
@@ -19,7 +20,7 @@ final class ManualSettelement {
     /**
      * Instance of self
      *
-     * @var ManualSettelement
+     * @var ManualSettlement
      */
     private static $instance = null;
 
@@ -33,7 +34,7 @@ final class ManualSettelement {
     private $container = [];
 
     /**
-     * Constructor for the ManualSettelement class
+     * Constructor for the ManualSettlement class
      *
      * Sets up all the appropriate hooks and actions
      * within our plugin.
@@ -41,8 +42,8 @@ final class ManualSettelement {
     private function __construct() {
         $this->define_constants();
 
-        register_activation_hook( MANUAL_SETTELEMENT_FILE, [ $this, 'activate' ] );
-        register_deactivation_hook( MANUAL_SETTELEMENT_FILE, [ $this, 'deactivate' ] );
+        register_activation_hook( MANUAL_SETTLEMENT_FILE, [ $this, 'activate' ] );
+        register_deactivation_hook( MANUAL_SETTLEMENT_FILE, [ $this, 'deactivate' ] );
 
         add_action( 'plugins_loaded', [ $this, 'init_plugin' ] );
         add_action( 'woocommerce_flush_rewrite_rules', [ $this, 'flush_rewrite_rules' ] );
@@ -50,12 +51,12 @@ final class ManualSettelement {
     }
 
     /**
-     * Initializes the ManualSettelement() class
+     * Initializes the ManualSettlement() class
      *
-     * Checks for an existing ManualSettelement instance
+     * Checks for an existing ManualSettlement instance
      * and if it doesn't find one then create a new one.
      *
-     * @return ManualSettelement
+     * @return ManualSettlement
      */
     public static function init() {
         if ( self::$instance === null ) {
@@ -89,7 +90,7 @@ final class ManualSettelement {
         $installer = new Installer();
         $installer->run();
 
-        // Rewrite rules during manual_settelement activation
+        // Rewrite rules during manual_settlement activation
         if ( $this->has_woocommerce() ) {
             $this->flush_rewrite_rules();
         }
@@ -105,7 +106,7 @@ final class ManualSettelement {
 	}
 
     /**
-     * Flush rewrite rules after manual_settelement is activated or woocommerce is activated
+     * Flush rewrite rules after manual_settlement is activated or woocommerce is activated
      *
      * @since 3.2.8
      */
@@ -127,17 +128,17 @@ final class ManualSettelement {
      * @return void
      */
     public function define_constants() {
-        defined( 'MANUAL_SETTELEMENT_PLUGIN_VERSION' ) || define( 'MANUAL_SETTELEMENT_PLUGIN_VERSION', $this->version );
-        defined( 'MANUAL_SETTELEMENT_DIR' ) || define( 'MANUAL_SETTELEMENT_DIR', dirname( MANUAL_SETTELEMENT_FILE ) );
-        defined( 'MANUAL_SETTELEMENT_INC_DIR' ) || define( 'MANUAL_SETTELEMENT_INC_DIR', MANUAL_SETTELEMENT_DIR . '/includes' );
-        defined( 'MANUAL_SETTELEMENT_TEMPLATE_DIR' ) || define( 'MANUAL_SETTELEMENT_TEMPLATE_DIR', MANUAL_SETTELEMENT_DIR . '/templates' );
-        defined( 'MANUAL_SETTELEMENT_PLUGIN_ASSET' ) || define( 'MANUAL_SETTELEMENT_PLUGIN_ASSET', plugins_url( 'assets', MANUAL_SETTELEMENT_FILE ) );
-        defined( 'MANUAL_SETTELEMENT_PLUGIN_ADMIN_ASSET' ) || define( 'MANUAL_SETTELEMENT_PLUGIN_ADMIN_ASSET' , MANUAL_SETTELEMENT_PLUGIN_ASSET . '/admin' );
-        defined( 'MANUAL_SETTELEMENT_PLUGIN_PUBLIC_ASSET' ) || define( 'MANUAL_SETTELEMENT_PLUGIN_PUBLIC_ASSET' , MANUAL_SETTELEMENT_PLUGIN_ASSET . '/public' );
+        defined( 'MANUAL_SETTLEMENT_PLUGIN_VERSION' ) || define( 'MANUAL_SETTLEMENT_PLUGIN_VERSION', $this->version );
+        defined( 'MANUAL_SETTLEMENT_DIR' ) || define( 'MANUAL_SETTLEMENT_DIR', dirname( MANUAL_SETTLEMENT_FILE ) );
+        defined( 'MANUAL_SETTLEMENT_INC_DIR' ) || define( 'MANUAL_SETTLEMENT_INC_DIR', MANUAL_SETTLEMENT_DIR . '/includes' );
+        defined( 'MANUAL_SETTLEMENT_TEMPLATE_DIR' ) || define( 'MANUAL_SETTLEMENT_TEMPLATE_DIR', MANUAL_SETTLEMENT_DIR . '/templates' );
+        defined( 'MANUAL_SETTLEMENT_PLUGIN_ASSET' ) || define( 'MANUAL_SETTLEMENT_PLUGIN_ASSET', plugins_url( 'assets', MANUAL_SETTLEMENT_FILE ) );
+        defined( 'MANUAL_SETTLEMENT_PLUGIN_ADMIN_ASSET' ) || define( 'MANUAL_SETTLEMENT_PLUGIN_ADMIN_ASSET' , MANUAL_SETTLEMENT_PLUGIN_ASSET . '/admin' );
+        defined( 'MANUAL_SETTLEMENT_PLUGIN_PUBLIC_ASSET' ) || define( 'MANUAL_SETTLEMENT_PLUGIN_PUBLIC_ASSET' , MANUAL_SETTLEMENT_PLUGIN_ASSET . '/public' );
 
         // give a way to turn off loading styles and scripts from parent theme
-        defined( 'MANUAL_SETTELEMENT_LOAD_STYLE' ) || define( 'MANUAL_SETTELEMENT_LOAD_STYLE', true );
-        defined( 'MANUAL_SETTELEMENT_LOAD_SCRIPTS' ) || define( 'MANUAL_SETTELEMENT_LOAD_SCRIPTS', true );
+        defined( 'MANUAL_SETTLEMENT_LOAD_STYLE' ) || define( 'MANUAL_SETTLEMENT_LOAD_STYLE', true );
+        defined( 'MANUAL_SETTLEMENT_LOAD_SCRIPTS' ) || define( 'MANUAL_SETTLEMENT_LOAD_SCRIPTS', true );
     }
 
     /**
@@ -149,7 +150,7 @@ final class ManualSettelement {
         $this->includes();
         $this->init_hooks();
 
-        do_action( 'manual_settelement_loaded' );
+        do_action( 'manual_settlement_loaded' );
     }
 
     /**
@@ -187,7 +188,7 @@ final class ManualSettelement {
     /**
      * Executed after all plugins are loaded
      *
-     * At this point manual_settelement Pro is loaded
+     * At this point manual_settlement Pro is loaded
      *
      * @since 2.8.7
      *
@@ -225,7 +226,7 @@ final class ManualSettelement {
 	 * @return string
 	 */
 	public function plugin_url() {
-		return untrailingslashit( plugins_url( '/', MANUAL_SETTELEMENT_FILE ) );
+		return untrailingslashit( plugins_url( '/', MANUAL_SETTLEMENT_FILE ) );
 	}
 
     /**
@@ -235,16 +236,16 @@ final class ManualSettelement {
      * @return string
      */
     public function get_template_path( $name ) {
-        $template = untrailingslashit( MANUAL_SETTELEMENT_TEMPLATE_DIR ) . '/' . untrailingslashit( $name );
+        $template = untrailingslashit( MANUAL_SETTLEMENT_TEMPLATE_DIR ) . '/' . untrailingslashit( $name );
 
-        return apply_filters( 'manual-settelement_template', $template, $name );
+        return apply_filters( 'manual-settlement_template', $template, $name );
     }
 
     /**
      * Get templates passing attributes and including the file.
      * You can use this method to load php template file by following:
-     * Example-1: lunarbite_manual_settelement()->get_template( 'admin/custom-meta-fields.php' );
-     * Example-2: lunarbite_manual_settelement()->get_template( 'admin/custom-meta-fields.php', [
+     * Example-1: lunarbite_manual_settlement()->get_template( 'admin/custom-meta-fields.php' );
+     * Example-2: lunarbite_manual_settlement()->get_template( 'admin/custom-meta-fields.php', [
 			'loop' => $loop,
 			'variation_data' => $variation_data,
 			'variation' => $variation
@@ -265,15 +266,15 @@ final class ManualSettelement {
         $template_path = $this->get_template_path( $template_name );
 
         if ( ! file_exists( $template_path ) ) {
-            _doing_it_wrong( __FUNCTION__, sprintf( '<code>%s</code> does not exist.', esc_html( $template_path ) ), MANUAL_SETTELEMENT_PLUGIN_VERSION );
+            _doing_it_wrong( __FUNCTION__, sprintf( '<code>%s</code> does not exist.', esc_html( $template_path ) ), MANUAL_SETTLEMENT_PLUGIN_VERSION );
 
             return;
         }
 
-        do_action( 'manual_settelement_before_template_part', $template_name, $args );
+        do_action( 'manual_settlement_before_template_part', $template_name, $args );
 
         include $this->get_template_path( $template_name );
 
-        do_action( 'manual_settelement_after_template_part', $template_name, $args );
+        do_action( 'manual_settlement_after_template_part', $template_name, $args );
     }
 }

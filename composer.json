@@ -1,10 +1,10 @@
 {
-    "name": "lunarbite/manual-settelement",
+    "name": "lunarbite/manual-settlement",
     "description": "Generate batch invoices from WooCommerce orders and manage manual settlements with ease.",
     "license": "GPL2",
     "autoload": {
         "psr-4": {
-            "LunarBite\\ManualSettelement\\": "includes/"
+            "LunarBite\\ManualSettlement\\": "includes/"
         }
     },
     "authors": [

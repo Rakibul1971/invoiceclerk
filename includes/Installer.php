@@ -1,6 +1,7 @@
 <?php
+namespace LunarBite\ManualSettlement;
 
-namespace LunarBite\ManualSettelement;
+defined( 'ABSPATH' ) || exit;
 
 /**
  * Installer class
@@ -23,13 +24,13 @@ class Installer {
      * @return void
      */
     private function add_version() {
-        $installed = get_option( 'manual_settelement_installed' );
+        $installed = get_option( 'manual_settlement_installed' );
 
         if ( ! $installed ) {
-            update_option( 'manual_settelement_installed', time() );
+            update_option( 'manual_settlement_installed', time() );
         }
 
-        update_option( 'manual_settelement_version', MANUAL_SETTELEMENT_PLUGIN_VERSION );
+        update_option( 'manual_settlement_version', MANUAL_SETTLEMENT_PLUGIN_VERSION );
     }
 
     /**
