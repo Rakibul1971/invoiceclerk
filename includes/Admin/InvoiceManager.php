@@ -226,8 +226,8 @@ class InvoiceManager {
                     $name = $item->get_name();
                     $qty  = $item->get_quantity();
                     $line_subtotal = $item->get_subtotal();
-                    $line_tax = $item->get_subtotal_tax();
-                    $line_total = $item->get_total();
+                    $line_tax      = $item->get_subtotal_tax();
+                    $line_total    = $line_subtotal + $line_tax;
 
                     $wpdb->insert(
                         $wpdb->prefix . 'ms_invoice_items',
@@ -238,7 +238,7 @@ class InvoiceManager {
                             'product_id'   => $p_id,
                             'product_name' => $name,
                             'quantity'     => $qty,
-                            'price'        => $qty != 0 ? $line_subtotal / $qty : 0,
+                            'price'        => $qty != 0 ? $line_total / $qty : 0,
                             'line_total'   => $line_total,
                         ]
                     );
