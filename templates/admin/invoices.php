@@ -5,6 +5,7 @@ defined( 'ABSPATH' ) || exit;
  */
 
 global $wpdb;
+// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 $invoices = $wpdb->get_results( "SELECT * FROM {$wpdb->prefix}ms_invoices ORDER BY created_at DESC" );
 ?>
 <div class="wrap">

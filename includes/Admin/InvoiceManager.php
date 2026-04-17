@@ -123,6 +123,7 @@ class InvoiceManager {
      */
     public function is_order_invoiced( $order_id ) {
         global $wpdb;
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
         $exists = $wpdb->get_var( $wpdb->prepare( "SELECT id FROM {$wpdb->prefix}ms_invoice_order_mapping WHERE order_id = %d", $order_id ) );
         return (bool) $exists;
     }
@@ -154,6 +155,7 @@ class InvoiceManager {
         $tax_total = 0;
         $total = 0;
 
+       // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
         $invoice_id = $wpdb->insert(
             $wpdb->prefix . 'ms_invoices',
             [
@@ -170,10 +172,12 @@ class InvoiceManager {
             ]
         );
 
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
         $id = $wpdb->insert_id;
 
         // Update invoice number with ID
         $invoice_number = 'INV-' . str_pad( $id, 6, '0', STR_PAD_LEFT );
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
         $wpdb->update(
             $wpdb->prefix . 'ms_invoices',
             [ 'invoice_number' => $invoice_number ],
@@ -188,6 +192,7 @@ class InvoiceManager {
             $item_type = $is_refund ? 'refund' : 'order';
 
             // Map order to invoice
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
             $wpdb->insert(
                 $wpdb->prefix . 'ms_invoice_order_mapping',
                 [
@@ -204,6 +209,7 @@ class InvoiceManager {
                 $line_total = $order->get_total(); // Usually negative
                 $tax_total_refund = $order->get_total_tax();
 
+                // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
                 $wpdb->insert(
                     $wpdb->prefix . 'ms_invoice_items',
                     [
@@ -230,6 +236,7 @@ class InvoiceManager {
                     $line_tax      = $item->get_subtotal_tax();
                     $line_total    = $line_subtotal + $line_tax;
 
+                    // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
                     $wpdb->insert(
                         $wpdb->prefix . 'ms_invoice_items',
                         [
@@ -239,7 +246,7 @@ class InvoiceManager {
                             'product_id'   => $p_id,
                             'product_name' => $name,
                             'quantity'     => $qty,
-                            'price'        => $qty != 0 ? $line_total / $qty : 0,
+                            'price'        => 0 !== $qty ? $line_total / $qty : 0,
                             'line_total'   => $line_total,
                         ]
                     );
@@ -255,7 +262,8 @@ class InvoiceManager {
             $shipping_tax      = (float) $order->get_shipping_tax();
             $shipping_total    = $shipping_subtotal + $shipping_tax;
 
-            if ( $shipping_total != 0 ) {
+            if ( 0 !== $shipping_total ) {
+                // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
                 $wpdb->insert(
                     $wpdb->prefix . 'ms_invoice_items',
                     [
@@ -277,6 +285,7 @@ class InvoiceManager {
         }
 
         // Update totals
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
         $wpdb->update(
             $wpdb->prefix . 'ms_invoices',
             [
@@ -287,7 +296,7 @@ class InvoiceManager {
             [ 'id' => $id ]
         );
 
-        wp_redirect( admin_url( 'admin.php?page=manual-settlement&message=invoice_created' ) );
+        wp_safe_redirect( admin_url( 'admin.php?page=manual-settlement&message=invoice_created' ) );
         exit;
     }
 
@@ -330,13 +339,14 @@ class InvoiceManager {
         }
 
         global $wpdb;
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
         $wpdb->update(
             $wpdb->prefix . 'ms_invoices',
             [ 'status' => $status, 'updated_at' => current_time( 'mysql' ) ],
             [ 'id' => $id ]
         );
 
-        wp_redirect( admin_url( 'admin.php?page=manual-settlement&message=status_updated' ) );
+        wp_safe_redirect( admin_url( 'admin.php?page=manual-settlement&message=status_updated' ) );
         exit;
     }
 
@@ -359,23 +369,29 @@ class InvoiceManager {
         global $wpdb;
 
         // Start transaction if supported or just delete
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
         $wpdb->query( 'START TRANSACTION' );
 
         try {
             // Delete Mapping
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
             $wpdb->delete( $wpdb->prefix . 'ms_invoice_order_mapping', [ 'invoice_id' => $id ] );
             
             // Delete Items
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
             $wpdb->delete( $wpdb->prefix . 'ms_invoice_items', [ 'invoice_id' => $id ] );
 
             // Delete Invoice
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
             $wpdb->delete( $wpdb->prefix . 'ms_invoices', [ 'id' => $id ] );
 
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
             $wpdb->query( 'COMMIT' );
             
-            wp_redirect( admin_url( 'admin.php?page=manual-settlement&message=invoice_deleted' ) );
+            wp_safe_redirect( admin_url( 'admin.php?page=manual-settlement&message=invoice_deleted' ) );
             exit;
         } catch ( \Exception $e ) {
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
             $wpdb->query( 'ROLLBACK' );
             wp_die( esc_html__( 'Failed to delete invoice.', 'manual-settlement' ) );
         }
