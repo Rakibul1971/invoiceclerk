@@ -112,6 +112,7 @@ final class ManualSettlement {
      */
     public function flush_rewrite_rules() {
         // fix rewrite rules
+        // phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.flush_rewrite_rules_flush_rewrite_rules
         flush_rewrite_rules();
     }
 
@@ -272,6 +273,7 @@ final class ManualSettlement {
 
         do_action( 'manual_settlement_before_template_part', $template_name, $args );
 
+        // phpcs:ignore WordPressVIPMinimum.Files.IncludingFile.UsingVariable
         include $this->get_template_path( $template_name );
 
         do_action( 'manual_settlement_after_template_part', $template_name, $args );

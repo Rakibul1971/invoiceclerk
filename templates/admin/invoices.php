@@ -14,6 +14,7 @@ $invoices = $wpdb->get_results( "SELECT * FROM {$wpdb->prefix}ms_invoices ORDER 
     <hr class="wp-header-end">
 
     <?php 
+    // phpcs:ignore WordPress.Security.NonceVerification.Recommended
     $message = isset( $_GET['message'] ) ? sanitize_text_field( wp_unslash( $_GET['message'] ) ) : '';
     if ( $message === 'invoice_created' ) : ?>
         <div class="notice notice-success is-dismissible">
