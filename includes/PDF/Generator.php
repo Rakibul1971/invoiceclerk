@@ -13,21 +13,21 @@ class MS_PDF extends TCPDF {
 
     public function Header() {
         $this->SetY(15);
-        $this->SetFont('helvetica', '', 10);
+        $this->SetFont('helvetica', '', 9);
         $html = '
         <table cellpadding="0" cellspacing="0" border="0" width="100%">
             <tr>
                 <td width="60%">
-                    <span style="font-size:24px; font-weight:bold; color:#B8860B;">' . strtoupper( $this->header_data['store_name'] ) . '</span><br><br><br>
-                    <span style="font-size:10px; line-height:1.5;">
+                    <span style="font-size:20px; font-weight:bold; color:#B8860B;">' . strtoupper( $this->header_data['store_name'] ) . '</span><br><br><br>
+                    <span style="font-size:9px; line-height:1.5;">
                         ' . date( 'j F Y' ) . '<br>
                         E-Mail: ' . $this->header_data['store_email'] . '
                     </span>
                 </td>
                 <td width="40%" align="right">
                     <span style="font-size:8px; border-bottom: 0.5px solid #000;">' . $this->header_data['store_name'] . ', ' . $this->header_data['store_address'] . ', ' . $this->header_data['store_postcode'] . ' ' . $this->header_data['store_city'] . '</span><br><br>
-                    <span style="font-size:12px; font-weight:bold;">' . $this->header_data['customer_name'] . '</span><br>
-                    <span style="font-size:11px;">
+                    <span style="font-size:10px; font-weight:bold;">' . $this->header_data['customer_name'] . '</span><br>
+                    <span style="font-size:9px;">
                         ' . $this->header_data['customer_address'] . '<br>
                         ' . $this->header_data['customer_city'] . '<br>
                         Customer No: ' . $this->header_data['customer_id'] . '
@@ -45,7 +45,7 @@ class MS_PDF extends TCPDF {
         
         // Footer Message
         if ( ! empty( $this->footer_data['footer_text'] ) ) {
-            $this->writeHTML('<span style="font-size:10px;">' . nl2br( esc_html( $this->footer_data['footer_text'] ) ) . '</span>', true, false, true, false, '');
+            $this->writeHTML('<span style="font-size:9px;">' . nl2br( esc_html( $this->footer_data['footer_text'] ) ) . '</span>', true, false, true, false, '');
             $this->Ln(2);
         }
 
@@ -145,7 +145,10 @@ class Generator {
         $pdf->setPrintHeader( true );
         $pdf->setPrintFooter( true );
         $pdf->SetMargins( 15, 60, 15 ); 
-        $pdf->SetAutoPageBreak( TRUE, 50 ); // Increase bottom margin for larger footer
+        $pdf->SetAutoPageBreak( TRUE, 50 ); 
+
+        // Set base font
+        $pdf->SetFont('helvetica', '', 9);
 
         // Add a page
         $pdf->AddPage();
@@ -153,10 +156,10 @@ class Generator {
         // Title Section
         $title_html = '
         <br>
-        <table cellpadding="5" cellspacing="0" border="0" style="border-top:1px solid #000; border-bottom:1px solid #000;">
+        <table cellpadding="4" cellspacing="0" border="0" style="border-top:1px solid #000; border-bottom:1px solid #000;">
             <tr>
-                <td width="55%"><span style="font-size:14px; font-weight:bold;">Invoice No. ' . $invoice->invoice_number . '</span></td>
-                <td width="45%" align="right"><span style="font-size:12px; font-weight:bold;">' . date( 'd.m.Y', strtotime( $invoice->start_date ) ) . ' to ' . date( 'd.m.Y', strtotime( $invoice->end_date ) ) . '</span></td>
+                <td width="55%"><span style="font-size:12px; font-weight:bold;">Invoice No. ' . $invoice->invoice_number . '</span></td>
+                <td width="45%" align="right"><span style="font-size:10px; font-weight:bold;">' . date( 'd.m.Y', strtotime( $invoice->start_date ) ) . ' to ' . date( 'd.m.Y', strtotime( $invoice->end_date ) ) . '</span></td>
             </tr>
         </table>';
 
@@ -164,7 +167,7 @@ class Generator {
 
         // Items Grouped by Order
         $current_order_id = 0;
-        $items_html = '<br><table cellpadding="3" cellspacing="0" border="0" width="100%">';
+        $items_html = '<br><table cellpadding="2" cellspacing="0" border="0" width="100%">';
 
         foreach ( $items as $item ) {
             if ( $item->order_id !== $current_order_id ) {
@@ -180,33 +183,35 @@ class Generator {
 
                 $items_html .= '
                     <tr>
-                        <td colspan="3" style="padding-top:10px;">
-                            <span style="font-size:11px; font-weight:bold;">' . $header_text . '</span>
+                        <td colspan="3" style="padding-top:8px;">
+                            <span style="font-size:9px; font-weight:bold;">' . $header_text . '</span>
                         </td>
                     </tr>';
             }
 
             $items_html .= '
                 <tr>
-                    <td width="10%" align="right">' . number_format( $item->quantity, 2 ) . '</td>
-                    <td width="70%">' . esc_html( $item->product_name ) . '</td>
-                    <td width="20%" align="right">' . wp_strip_all_tags( wc_price( $item->line_total ) ) . '</td>
+                    <td width="10%" align="right" style="font-size:9px;">' . number_format( $item->quantity, 2 ) . '</td>
+                    <td width="70%" style="font-size:9px;">' . esc_html( $item->product_name ) . '</td>
+                    <td width="20%" align="right" style="font-size:9px;">' . wp_strip_all_tags( wc_price( $item->line_total ) ) . '</td>
                 </tr>';
         }
 
         $items_html .= '</table>';
         $pdf->writeHTML( $items_html, true, false, true, false, '' );
 
-        // Totals Section
+        // Position Totals at the bottom
         $pdf->SetY(-60);
+
+        // Totals Section
         $totals_html = '
-        <table cellpadding="5" cellspacing="0" border="0" style="border-top:1px solid #000;">
+        <table cellpadding="4" cellspacing="0" border="0" style="border-top:1px solid #000;">
             <tr>
                 <td width="50%">
-                    <span style="font-size:14px; font-weight:bold;">Total Amount to Pay</span>
+                    <span style="font-size:12px; font-weight:bold;">Total Amount to Pay</span>
                 </td>
                 <td width="50%" align="right">
-                    <span style="font-size:16px; font-weight:bold;">' . wp_strip_all_tags( wc_price( $invoice->total ) ) . '</span>
+                    <span style="font-size:14px; font-weight:bold;">' . wp_strip_all_tags( wc_price( $invoice->total ) ) . '</span>
                 </td>
             </tr>
         </table>';
