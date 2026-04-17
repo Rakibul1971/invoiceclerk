@@ -248,6 +248,31 @@ class InvoiceManager {
                     $total     += $line_total;
                 }
             }
+
+            // Add Shipping per order
+            $shipping_subtotal = (float) $order->get_shipping_total();
+            $shipping_tax      = (float) $order->get_shipping_tax();
+            $shipping_total    = $shipping_subtotal + $shipping_tax;
+
+            if ( $shipping_total != 0 ) {
+                $wpdb->insert(
+                    $wpdb->prefix . 'ms_invoice_items',
+                    [
+                        'invoice_id'   => $id,
+                        'order_id'     => $order_id,
+                        'item_type'    => 'shipping',
+                        'product_id'   => 0,
+                        'product_name' => __( 'Shipping', 'manual-settelement' ),
+                        'quantity'     => 1,
+                        'price'        => $shipping_total,
+                        'line_total'   => $shipping_total,
+                    ]
+                );
+
+                $subtotal  += $shipping_subtotal;
+                $tax_total += $shipping_tax;
+                $total     += $shipping_total;
+            }
         }
 
         // Update totals
