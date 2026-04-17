@@ -7,6 +7,36 @@ use TCPDF;
 /**
  * PDF Generator class
  */
+class MS_PDF extends TCPDF {
+    public $footer_data = [];
+
+    public function Footer() {
+        $this->SetY(-25);
+        $this->SetFont('helvetica', '', 8);
+        $this->SetTextColor(85, 85, 85);
+        $html = '
+        <table cellpadding="0" cellspacing="0" border="0" width="100%" style="border-top:1px solid #ccc;">
+            <tr><td colspan="3">&nbsp;</td></tr>
+            <tr>
+                <td width="33%">
+                    ' . $this->footer_data['store_name'] . '<br>
+                    ' . $this->footer_data['store_address'] . '<br>
+                    ' . $this->footer_data['store_postcode'] . ' ' . $this->footer_data['store_city'] . '
+                </td>
+                <td width="33%" align="center">&nbsp;</td>
+                <td width="33%" align="right">
+                    E-Mail: ' . $this->footer_data['store_email'] . '<br>
+                    Web: ' . $this->footer_data['home_url'] . '
+                </td>
+            </tr>
+        </table>';
+        $this->writeHTML($html, true, false, true, false, '');
+    }
+}
+
+/**
+ * PDF Generator class
+ */
 class Generator {
 
     /**
@@ -44,43 +74,42 @@ class Generator {
         $store_postcode = get_option( 'woocommerce_store_postcode' );
         $store_city    = get_option( 'woocommerce_store_city' );
         $store_email   = get_option( 'admin_email' );
-        $store_phone   = get_option( 'woocommerce_store_phone', '' );
 
         // Footer Info
         $footer_text = get_option( 'ms_footer_text', '' );
 
         // Create new PDF document
-        $pdf = new TCPDF( PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false );
+        $pdf = new MS_PDF( PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false );
+        $pdf->footer_data = [
+            'store_name'    => $store_name,
+            'store_address' => $store_address,
+            'store_postcode' => $store_postcode,
+            'store_city'    => $store_city,
+            'store_email'   => $store_email,
+            'home_url'      => home_url(),
+        ];
 
         // Set document information
         $pdf->SetCreator( PDF_CREATOR );
         $pdf->SetAuthor( 'LunarBite' );
         $pdf->SetTitle( $invoice->invoice_number );
 
-        // Remove default header/footer
         $pdf->setPrintHeader( false );
-        $pdf->setPrintFooter( false );
-
-        // Set margins
+        $pdf->setPrintFooter( true );
         $pdf->SetMargins( 15, 15, 15 );
-
-        // Set auto page breaks
-        $pdf->SetAutoPageBreak( TRUE, 25 );
+        $pdf->SetAutoPageBreak( TRUE, 35 );
 
         // Add a page
         $pdf->AddPage();
 
-        // Custom Header as per image
+        // Custom Header
         $header_html = '
         <table cellpadding="0" cellspacing="0" border="0" width="100%">
             <tr>
                 <td width="60%">
                     <span style="font-size:24px; font-weight:bold; color:#B8860B;">' . strtoupper( $store_name ) . '</span><br><br><br>
                     <span style="font-size:10px; line-height:1.5;">
-                        ' . date( 'd.m.Y' ) . '<br>
-                        Customer No: ' . $customer_id . '<br>
-                        VAT No: ' . get_user_meta( $customer_id, 'vat_number', true ) . '<br>
-                        Phone: ' . $store_phone . '<br>
+                        ' . date( 'j F Y' ) . '<br>
                         E-Mail: ' . $store_email . '
                     </span>
                 </td>
@@ -89,7 +118,8 @@ class Generator {
                     <span style="font-size:12px; font-weight:bold;">' . $customer_display_name . '</span><br>
                     <span style="font-size:11px;">
                         ' . $billing_address_1 . '<br>
-                        ' . $billing_postcode . ' ' . $billing_city . '
+                        ' . $billing_postcode . ' ' . $billing_city . '<br>
+                        Customer No: ' . $customer_id . '
                     </span>
                 </td>
             </tr>
@@ -165,29 +195,6 @@ class Generator {
         // Footer Message
         $msg_html = '<br><br><span style="font-size:11px;">' . nl2br( esc_html( $footer_text ) ) . '</span>';
         $pdf->writeHTML( $msg_html, true, false, true, false, '' );
-
-        // Bottom Bar Footer
-        $pdf->SetY( -30 );
-        $footer_bar_html = '
-        <table cellpadding="0" cellspacing="0" border="0" width="100%" style="border-top:1px solid #ccc; font-size:8px; color:#555;">
-            <tr><td colspan="3">&nbsp;</td></tr>
-            <tr>
-                <td width="33%">
-                    ' . $store_name . '<br>
-                    ' . $store_address . '<br>
-                    ' . $store_postcode . ' ' . $store_city . '
-                </td>
-                <td width="33%" align="center">
-                    &nbsp;
-                </td>
-                <td width="33%" align="right">
-                    Tel: ' . $store_phone . '<br>
-                    E-Mail: ' . $store_email . '<br>
-                    Web: ' . home_url() . '
-                </td>
-            </tr>
-        </table>';
-        $pdf->writeHTML( $footer_bar_html, true, false, true, false, '' );
 
         // Close and output PDF document
         $pdf->Output( $invoice->invoice_number . '.pdf', 'D' );
