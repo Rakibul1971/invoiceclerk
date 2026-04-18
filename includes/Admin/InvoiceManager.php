@@ -28,8 +28,8 @@ class InvoiceManager {
         check_ajax_referer( 'ms_admin_nonce', 'nonce' );
 
         $customer_id = isset( $_POST['customer_id'] ) ? absint( $_POST['customer_id'] ) : 0;
-        $start_date  = isset( $_POST['start_date'] ) ? sanitize_text_field( $_POST['start_date'] ) : '';
-        $end_date    = isset( $_POST['end_date'] ) ? sanitize_text_field( $_POST['end_date'] ) : '';
+        $start_date  = isset( $_POST['start_date'] ) ? sanitize_text_field( wp_unslash( $_POST['start_date'] ) ) : '';
+        $end_date    = isset( $_POST['end_date'] ) ? sanitize_text_field( wp_unslash( $_POST['end_date'] ) ) : '';
 
         if ( ! $customer_id ) {
             wp_send_json_error( esc_html__( 'Invalid customer selected.', 'manual-settlement' ) );
@@ -141,11 +141,11 @@ class InvoiceManager {
 
         $customer_id = isset( $_POST['customer_id'] ) ? absint( $_POST['customer_id'] ) : 0;
         $order_ids   = isset( $_POST['order_ids'] ) ? array_map( 'absint', $_POST['order_ids'] ) : [];
-        $start_date  = isset( $_POST['start_date'] ) ? sanitize_text_field( $_POST['start_date'] ) : '';
-        $end_date    = isset( $_POST['end_date'] ) ? sanitize_text_field( $_POST['end_date'] ) : '';
+        $start_date  = isset( $_POST['start_date'] ) ? sanitize_text_field( wp_unslash( $_POST['start_date'] ) ) : '';
+        $end_date    = isset( $_POST['end_date'] ) ? sanitize_text_field( wp_unslash( $_POST['end_date'] ) ) : '';
 
         if ( ! $customer_id || empty( $order_ids ) ) {
-            wp_redirect( admin_url( 'admin.php?page=ms-create-invoice&error=invalid_data' ) );
+            wp_safe_redirect( admin_url( 'admin.php?page=ms-create-invoice&error=invalid_data' ) );
             exit;
         }
 
