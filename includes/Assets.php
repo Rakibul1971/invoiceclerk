@@ -36,8 +36,8 @@ class Assets {
 		$admin_script    = MANUAL_SETTLEMENT_PLUGIN_ADMIN_ASSET . '/js/script.js';
 		$frontend_script = MANUAL_SETTLEMENT_PLUGIN_PUBLIC_ASSET . '/js/script.js';
 
-		wp_register_script( 'moment', MANUAL_SETTLEMENT_PLUGIN_ADMIN_ASSET . '/js/vendor/moment.min.js', array(), '2.29.4', true );
-		wp_register_script( 'daterangepicker', MANUAL_SETTLEMENT_PLUGIN_ADMIN_ASSET . '/js/vendor/daterangepicker.min.js', array( 'jquery', 'moment' ), '3.1', true );
+		wp_register_script( 'moment', MANUAL_SETTLEMENT_PLUGIN_ADMIN_ASSET . '/js/moment.min.js', array(), '2.29.4', true );
+		wp_register_script( 'daterangepicker', MANUAL_SETTLEMENT_PLUGIN_ADMIN_ASSET . '/js/daterangepicker.min.js', array( 'jquery', 'moment' ), '3.1', true );
 
 		wp_register_script( 'manual_settlement_admin_script', $admin_script, array( 'jquery', 'moment', 'daterangepicker' ), MANUAL_SETTLEMENT_PLUGIN_VERSION, true );
 		wp_register_script( 'manual_settlement_script', $frontend_script, array(), MANUAL_SETTLEMENT_PLUGIN_VERSION, true );
@@ -52,7 +52,7 @@ class Assets {
 		$admin_style    = MANUAL_SETTLEMENT_PLUGIN_ADMIN_ASSET . '/css/style.css';
 		$frontend_style = MANUAL_SETTLEMENT_PLUGIN_PUBLIC_ASSET . '/css/style.css';
 
-		wp_register_style( 'daterangepicker', MANUAL_SETTLEMENT_PLUGIN_ADMIN_ASSET . '/css/vendor/daterangepicker.css', array(), '3.1' );
+		wp_register_style( 'daterangepicker', MANUAL_SETTLEMENT_PLUGIN_ADMIN_ASSET . '/css/daterangepicker.css', array(), '3.1' );
 		wp_register_style( 'manual_settlement_admin_style', $admin_style, array( 'daterangepicker' ), MANUAL_SETTLEMENT_PLUGIN_VERSION );
 		wp_register_style( 'manual_settlement_style', $frontend_style, array(), MANUAL_SETTLEMENT_PLUGIN_VERSION );
 	}

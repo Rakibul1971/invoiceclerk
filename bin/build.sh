@@ -63,6 +63,10 @@ status "Installing dependencies... 📦"
 cd $BUILD_DIR
 composer install --optimize-autoloader --no-dev -q
 
+# Remove unnecessary fonts from TCPDF to keep the plugin size small
+status "Trimming TCPDF fonts... ✂️"
+find vendor/tecnickcom/tcpdf/fonts -type f ! -name "helvetica*" ! -name "times*" ! -name "courier*" ! -name "pdfa*" ! -name "pdfac*" ! -name "uni2cid*" ! -name "index.php" -size +50k -delete
+
 # Remove composer files
 rm composer.json composer.lock
 
