@@ -58,6 +58,10 @@ for file in ${FILES[@]}; do
     fi
 done
 
+# Remove hidden files from build
+find $BUILD_DIR -name ".gitkeep" -delete
+rm -f "$BUILD_DIR/assets/admin/js/moment.min.js"
+
 # Install composer dependencies
 status "Installing dependencies... 📦"
 cd $BUILD_DIR
@@ -67,8 +71,8 @@ composer install --optimize-autoloader --no-dev -q
 status "Trimming TCPDF fonts... ✂️"
 find vendor/tecnickcom/tcpdf/fonts -type f ! -name "helvetica*" ! -name "times*" ! -name "courier*" ! -name "pdfa*" ! -name "pdfac*" ! -name "uni2cid*" ! -name "index.php" -size +50k -delete
 
-# Remove composer files
-rm composer.json composer.lock
+# We are keeping composer.json as required by some plugin checkers when /vendor exists
+# rm composer.json composer.lock
 
 # go one up, to the build dir
 status "Creating archive... 🎁"

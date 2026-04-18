@@ -36,7 +36,6 @@ class Assets {
 		$admin_script    = MANUAL_SETTLEMENT_PLUGIN_ADMIN_ASSET . '/js/script.js';
 		$frontend_script = MANUAL_SETTLEMENT_PLUGIN_PUBLIC_ASSET . '/js/script.js';
 
-		wp_register_script( 'moment', MANUAL_SETTLEMENT_PLUGIN_ADMIN_ASSET . '/js/moment.min.js', array(), '2.29.4', true );
 		wp_register_script( 'daterangepicker', MANUAL_SETTLEMENT_PLUGIN_ADMIN_ASSET . '/js/daterangepicker.min.js', array( 'jquery', 'moment' ), '3.1', true );
 
 		wp_register_script( 'manual_settlement_admin_script', $admin_script, array( 'jquery', 'moment', 'daterangepicker' ), MANUAL_SETTLEMENT_PLUGIN_VERSION, true );
