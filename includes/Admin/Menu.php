@@ -2,6 +2,8 @@
 
 namespace LunarBite\ManualSettlement\Admin;
 
+defined( 'ABSPATH' ) || exit;
+
 /**
  * Menu class
  */

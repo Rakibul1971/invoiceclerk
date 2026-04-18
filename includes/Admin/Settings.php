@@ -21,9 +21,23 @@ class Settings {
      * @return void
      */
     public function register_settings() {
-        register_setting( 'ms_settings', 'ms_footer_text' );
-        register_setting( 'ms_settings', 'ms_allowed_statuses' );
-        register_setting( 'ms_settings', 'ms_handle_refunds' );
+        register_setting( 'ms_settings', 'ms_footer_text', [
+            'type'              => 'string',
+            'sanitize_callback' => 'sanitize_textarea_field',
+            'default'           => '',
+        ] );
+
+        register_setting( 'ms_settings', 'ms_allowed_statuses', [
+            'type'              => 'array',
+            'sanitize_callback' => [ $this, 'sanitize_allowed_statuses' ],
+            'default'           => [],
+        ] );
+
+        register_setting( 'ms_settings', 'ms_handle_refunds', [
+            'type'              => 'string',
+            'sanitize_callback' => 'sanitize_text_field',
+            'default'           => 'no',
+        ] );
 
         add_settings_section(
             'ms_general_section',
@@ -99,5 +113,18 @@ class Settings {
         }
         echo '</div>';
         echo '<p class="description">' . esc_html__( 'Select which WooCommerce order statuses are eligible for manual settlement.', 'manual-settlement' ) . '</p>';
+    }
+    /**
+     * Sanitize allowed statuses
+     *
+     * @param mixed $input
+     * @return array
+     */
+    public function sanitize_allowed_statuses( $input ) {
+        if ( ! is_array( $input ) ) {
+            return [];
+        }
+
+        return array_map( 'sanitize_text_field', $input );
     }
 }

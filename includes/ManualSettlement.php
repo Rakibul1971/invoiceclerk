@@ -238,7 +238,7 @@ final class ManualSettlement {
     public function get_template_path( $name ) {
         $template = untrailingslashit( MANUAL_SETTLEMENT_TEMPLATE_DIR ) . '/' . untrailingslashit( $name );
 
-        return apply_filters( 'manual-settlement_template', $template, $name );
+        return apply_filters( 'manual_settlement_template', $template, $name );
     }
 
     /**
