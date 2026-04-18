@@ -3,7 +3,7 @@ defined( 'ABSPATH' ) || exit;
 
 /**
  * Plugin Name: Manual Settlement
- * Plugin URI:  https://profiles.wordpress.org/rakibulislamshazol/
+ * Plugin URI:  https://profiles.wordpress.org/manual-settlement/
  * Description: Generate batch invoices from WooCommerce orders and manage manual settlements with ease.
  * Version: 0.1.0
  * Author: lunarBite
