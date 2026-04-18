@@ -1,5 +1,5 @@
 === Manual Settlement ===
-Contributors: MD. Rakibul Islam Shazol
+Contributors: rakibulislamshazol
 Tags: woocommerce, invoice, settlement, manual settlement, batch invoice
 Requires at least: 5.0
 Tested up to: 6.9
@@ -37,9 +37,10 @@ You can set a custom footer message and store details from the settings page.
 
 == Screenshots ==
 
-1. The main invoice management screen.
-2. Creating a new batch invoice with order selection.
-3. A sample PDF invoice with grouped orders and refunds.
+1. Create a new invoice by selecting a customer and date range.
+2. Fetch and review customer orders and refunds before generating the invoice.
+3. Manage generated invoices with download, mark as paid, and delete actions.
+4. Invoice PDF.
 
 == Changelog ==
 
