@@ -1,5 +1,5 @@
 === Manual Settlement ===
-Contributors: Rakibul1971
+Contributors: MD. Rakibul Islam Shazol
 Tags: woocommerce, invoice, settlement, manual settlement, batch invoice
 Requires at least: 5.0
 Tested up to: 6.9
