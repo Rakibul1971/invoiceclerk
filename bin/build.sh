@@ -58,9 +58,9 @@ for file in ${FILES[@]}; do
     fi
 done
 
-# Remove hidden files from build
-find $BUILD_DIR -name ".gitkeep" -delete
-rm -f "$BUILD_DIR/assets/admin/js/moment.min.js"
+# Remove hidden files and non-production directories from build
+find $BUILD_DIR -name ".*" -exec rm -rf {} +
+rm -rf "$BUILD_DIR/bin" 
 
 # Install composer dependencies
 status "Installing dependencies... 📦"
