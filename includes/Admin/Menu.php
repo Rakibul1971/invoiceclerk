@@ -1,6 +1,6 @@
 <?php
 
-namespace LunarBite\ManualSettlement\Admin;
+namespace InvoiceClerk\ManualSettlement\Admin;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -22,23 +22,23 @@ class Menu {
      * @return void
      */
     public function admin_menu() {
-        $parent_slug = 'manual-settlement';
+        $parent_slug = 'invoiceclerk';
         $capability = 'manage_woocommerce';
 
         add_menu_page(
-            __( 'Manual Settlement', 'manual-settlement' ),
-            __( 'Manual Settlement', 'manual-settlement' ),
+            __( 'Manual Settlement', 'invoiceclerk' ),
+            __( 'Manual Settlement', 'invoiceclerk' ),
             $capability,
             $parent_slug,
             [ $this, 'invoices_page' ],
             'dashicons-media-document',
-            25
+            58
         );
 
         add_submenu_page(
             $parent_slug,
-            __( 'Invoices', 'manual-settlement' ),
-            __( 'Invoices', 'manual-settlement' ),
+            __( 'Invoices', 'invoiceclerk' ),
+            __( 'Invoices', 'invoiceclerk' ),
             $capability,
             $parent_slug,
             [ $this, 'invoices_page' ]
@@ -46,19 +46,19 @@ class Menu {
 
         add_submenu_page(
             $parent_slug,
-            __( 'Create Invoice', 'manual-settlement' ),
-            __( 'Create Invoice', 'manual-settlement' ),
+            __( 'Create Invoice', 'invoiceclerk' ),
+            __( 'Create Invoice', 'invoiceclerk' ),
             $capability,
-            'ms-create-invoice',
+            'invoiceclerk-create-invoice',
             [ $this, 'create_invoice_page' ]
         );
 
         add_submenu_page(
             $parent_slug,
-            __( 'Settings', 'manual-settlement' ),
-            __( 'Settings', 'manual-settlement' ),
+            __( 'Settings', 'invoiceclerk' ),
+            __( 'Settings', 'invoiceclerk' ),
             $capability,
-            'ms-settings',
+            'invoiceclerk-settings',
             [ $this, 'settings_page' ]
         );
     }
@@ -69,7 +69,7 @@ class Menu {
      * @return void
      */
     public function invoices_page() {
-        lunarbite_manual_settlement()->get_template( 'admin/invoices.php' );
+        invoiceclerk_manual_settlement()->get_template( 'admin/invoices.php' );
     }
 
     /**
@@ -78,7 +78,7 @@ class Menu {
      * @return void
      */
     public function create_invoice_page() {
-        lunarbite_manual_settlement()->get_template( 'admin/create-invoice.php' );
+        invoiceclerk_manual_settlement()->get_template( 'admin/create-invoice.php' );
     }
 
     /**
@@ -89,11 +89,11 @@ class Menu {
     public function settings_page() {
         ?>
         <div class="wrap">
-            <h1><?php esc_html_e( 'Manual Settlement Settings', 'manual-settlement' ); ?></h1>
+            <h1><?php esc_html_e( 'Manual Settlement Settings', 'invoiceclerk' ); ?></h1>
             <form method="post" action="options.php">
                 <?php
-                settings_fields( 'ms_settings' );
-                do_settings_sections( 'ms-settings' );
+                settings_fields( 'invoiceclerk_settings' );
+                do_settings_sections( 'invoiceclerk-settings' );
                 submit_button();
                 ?>
             </form>

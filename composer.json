@@ -1,21 +1,21 @@
 {
-    "name": "lunarbite/manual-settlement",
+    "name": "invoiceclerk/manual-settlement-for-woocommerce",
     "description": "Generate batch invoices from WooCommerce orders and manage manual settlements with ease.",
     "license": "GPL2",
     "autoload": {
         "psr-4": {
-            "LunarBite\\ManualSettlement\\": "includes/"
+            "InvoiceClerk\\ManualSettlement\\": "includes/"
         }
     },
     "authors": [
         {
             "name": "lunarBite",
             "email": "shazolislam8@gmail.com",
-            "homepage": "https://lunarbite.dev"
+            "homepage": "https://wordpress.org/plugins/invoiceclerk"
         }
     ],
     "require": {
-        "tecnickcom/tcpdf": "^6.7"
+        "tecnickcom/tcpdf": "dev-main"
     },
     "minimum-stability": "dev",
     "require-dev": {

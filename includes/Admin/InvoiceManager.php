@@ -1,5 +1,5 @@
 <?php
-namespace LunarBite\ManualSettlement\Admin;
+namespace InvoiceClerk\ManualSettlement\Admin;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -12,11 +12,11 @@ class InvoiceManager {
      * Initialize the class
      */
     public function __construct() {
-        add_action( 'wp_ajax_ms_fetch_orders', [ $this, 'fetch_orders' ] );
-        add_action( 'admin_post_ms_create_invoice', [ $this, 'create_invoice' ] );
-        add_action( 'admin_post_ms_download_invoice', [ $this, 'download_invoice' ] );
-        add_action( 'admin_post_ms_update_invoice_status', [ $this, 'update_invoice_status' ] );
-        add_action( 'admin_post_ms_delete_invoice', [ $this, 'delete_invoice' ] );
+        add_action( 'wp_ajax_invoiceclerk_fetch_orders', [ $this, 'fetch_orders' ] );
+        add_action( 'admin_post_invoiceclerk_create_invoice', [ $this, 'create_invoice' ] );
+        add_action( 'admin_post_invoiceclerk_download_invoice', [ $this, 'download_invoice' ] );
+        add_action( 'admin_post_invoiceclerk_update_invoice_status', [ $this, 'update_invoice_status' ] );
+        add_action( 'admin_post_invoiceclerk_delete_invoice', [ $this, 'delete_invoice' ] );
     }
 
     /**
@@ -25,25 +25,25 @@ class InvoiceManager {
      * @return void
      */
     public function fetch_orders() {
-        check_ajax_referer( 'ms_admin_nonce', 'nonce' );
+        check_ajax_referer( 'invoiceclerk_admin_nonce', 'nonce' );
 
         $customer_id = isset( $_POST['customer_id'] ) ? absint( $_POST['customer_id'] ) : 0;
         $start_date  = isset( $_POST['start_date'] ) ? sanitize_text_field( wp_unslash( $_POST['start_date'] ) ) : '';
         $end_date    = isset( $_POST['end_date'] ) ? sanitize_text_field( wp_unslash( $_POST['end_date'] ) ) : '';
 
         if ( ! $customer_id ) {
-            wp_send_json_error( esc_html__( 'Invalid customer selected.', 'manual-settlement' ) );
+            wp_send_json_error( esc_html__( 'Invalid customer selected.', 'invoiceclerk' ) );
         }
 
-        $allowed_statuses = get_option( 'ms_allowed_statuses', [] );
-        $handle_refunds   = get_option( 'ms_handle_refunds', 'no' );
+        $allowed_statuses = get_option( 'invoiceclerk_allowed_statuses', [] );
+        $handle_refunds   = get_option( 'invoiceclerk_handle_refunds', 'no' );
 
         if ( 'yes' === $handle_refunds && ! in_array( 'wc-refunded', $allowed_statuses, true ) ) {
             $allowed_statuses[] = 'wc-refunded';
         }
 
         if ( empty( $allowed_statuses ) ) {
-            wp_send_json_error( esc_html__( 'No order statuses allowed in settings. Please check settings.', 'manual-settlement' ) );
+            wp_send_json_error( esc_html__( 'No order statuses allowed in settings. Please check settings.', 'invoiceclerk' ) );
         }
 
         // Fetch orders
@@ -124,7 +124,7 @@ class InvoiceManager {
     public function is_order_invoiced( $order_id ) {
         global $wpdb;
         // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
-        $exists = $wpdb->get_var( $wpdb->prepare( "SELECT id FROM {$wpdb->prefix}ms_invoice_order_mapping WHERE order_id = %d", $order_id ) );
+        $exists = $wpdb->get_var( $wpdb->prepare( "SELECT id FROM {$wpdb->prefix}invoiceclerk_invoice_order_mapping WHERE order_id = %d", $order_id ) );
         return (bool) $exists;
     }
 
@@ -135,8 +135,8 @@ class InvoiceManager {
      */
     public function create_invoice() {
         $nonce = isset( $_POST['_wpnonce'] ) ? sanitize_text_field( wp_unslash( $_POST['_wpnonce'] ) ) : '';
-        if ( ! wp_verify_nonce( $nonce, 'ms_create_invoice_nonce' ) ) {
-            wp_die( esc_html__( 'Security check failed.', 'manual-settlement' ) );
+        if ( ! wp_verify_nonce( $nonce, 'invoiceclerk_create_invoice_nonce' ) ) {
+            wp_die( esc_html__( 'Security check failed.', 'invoiceclerk' ) );
         }
 
         $customer_id = isset( $_POST['customer_id'] ) ? absint( $_POST['customer_id'] ) : 0;
@@ -145,7 +145,7 @@ class InvoiceManager {
         $end_date    = isset( $_POST['end_date'] ) ? sanitize_text_field( wp_unslash( $_POST['end_date'] ) ) : '';
 
         if ( ! $customer_id || empty( $order_ids ) ) {
-            wp_safe_redirect( admin_url( 'admin.php?page=ms-create-invoice&error=invalid_data' ) );
+            wp_safe_redirect( admin_url( 'admin.php?page=invoiceclerk-create-invoice&error=invalid_data' ) );
             exit;
         }
 
@@ -157,7 +157,7 @@ class InvoiceManager {
 
        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
         $invoice_id = $wpdb->insert(
-            $wpdb->prefix . 'ms_invoices',
+            $wpdb->prefix . 'invoiceclerk_invoices',
             [
                 'customer_id'    => $customer_id,
                 'invoice_number' => 'INV-' . time(), // Temporary invoice number
@@ -179,7 +179,7 @@ class InvoiceManager {
         $invoice_number = 'INV-' . str_pad( $id, 6, '0', STR_PAD_LEFT );
         // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
         $wpdb->update(
-            $wpdb->prefix . 'ms_invoices',
+            $wpdb->prefix . 'invoiceclerk_invoices',
             [ 'invoice_number' => $invoice_number ],
             [ 'id' => $id ]
         );
@@ -194,7 +194,7 @@ class InvoiceManager {
             // Map order to invoice
             // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
             $wpdb->insert(
-                $wpdb->prefix . 'ms_invoice_order_mapping',
+                $wpdb->prefix . 'invoiceclerk_invoice_order_mapping',
                 [
                     'invoice_id' => $id,
                     'order_id'   => $order_id,
@@ -211,13 +211,13 @@ class InvoiceManager {
 
                 // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
                 $wpdb->insert(
-                    $wpdb->prefix . 'ms_invoice_items',
+                    $wpdb->prefix . 'invoiceclerk_invoice_items',
                     [
                         'invoice_id'   => $id,
                         'order_id'     => $order_id,
                         'item_type'    => 'refund',
                         'product_id'   => 0,
-                        'product_name' => esc_html__( 'Refund for Order #', 'manual-settlement' ) . $order->get_parent_id(),
+                        'product_name' => esc_html__( 'Refund for Order #', 'invoiceclerk' ) . $order->get_parent_id(),
                         'quantity'     => 1,
                         'price'        => $line_total,
                         'line_total'   => $line_total,
@@ -238,7 +238,7 @@ class InvoiceManager {
 
                     // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
                     $wpdb->insert(
-                        $wpdb->prefix . 'ms_invoice_items',
+                        $wpdb->prefix . 'invoiceclerk_invoice_items',
                         [
                             'invoice_id'   => $id,
                             'order_id'     => $order_id,
@@ -265,13 +265,13 @@ class InvoiceManager {
             if ( 0 !== $shipping_total ) {
                 // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
                 $wpdb->insert(
-                    $wpdb->prefix . 'ms_invoice_items',
+                    $wpdb->prefix . 'invoiceclerk_invoice_items',
                     [
                         'invoice_id'   => $id,
                         'order_id'     => $order_id,
                         'item_type'    => 'shipping',
                         'product_id'   => 0,
-                        'product_name' => esc_html__( 'Shipping', 'manual-settlement' ),
+                        'product_name' => esc_html__( 'Shipping', 'invoiceclerk' ),
                         'quantity'     => 1,
                         'price'        => $shipping_total,
                         'line_total'   => $shipping_total,
@@ -287,7 +287,7 @@ class InvoiceManager {
         // Update totals
         // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
         $wpdb->update(
-            $wpdb->prefix . 'ms_invoices',
+            $wpdb->prefix . 'invoiceclerk_invoices',
             [
                 'subtotal'  => $subtotal,
                 'tax_total' => $tax_total,
@@ -296,7 +296,7 @@ class InvoiceManager {
             [ 'id' => $id ]
         );
 
-        wp_safe_redirect( admin_url( 'admin.php?page=manual-settlement&message=invoice_created' ) );
+        wp_safe_redirect( admin_url( 'admin.php?page=invoiceclerk&message=invoice_created' ) );
         exit;
     }
 
@@ -307,16 +307,16 @@ class InvoiceManager {
      */
     public function download_invoice() {
         $nonce = isset( $_GET['_wpnonce'] ) ? sanitize_text_field( wp_unslash( $_GET['_wpnonce'] ) ) : '';
-        if ( ! wp_verify_nonce( $nonce, 'ms_download_invoice_nonce' ) ) {
-            wp_die( esc_html__( 'Security check failed.', 'manual-settlement' ) );
+        if ( ! wp_verify_nonce( $nonce, 'invoiceclerk_download_invoice_nonce' ) ) {
+            wp_die( esc_html__( 'Security check failed.', 'invoiceclerk' ) );
         }
 
         $id = isset( $_GET['id'] ) ? absint( $_GET['id'] ) : 0;
         if ( ! $id ) {
-            wp_die( esc_html__( 'Invalid invoice ID.', 'manual-settlement' ) );
+            wp_die( esc_html__( 'Invalid invoice ID.', 'invoiceclerk' ) );
         }
 
-        $generator = new \LunarBite\ManualSettlement\PDF\Generator();
+        $generator = new \InvoiceClerk\ManualSettlement\PDF\Generator();
         $generator->generate( $id );
     }
 
@@ -327,26 +327,26 @@ class InvoiceManager {
      */
     public function update_invoice_status() {
         $nonce = isset( $_GET['_wpnonce'] ) ? sanitize_text_field( wp_unslash( $_GET['_wpnonce'] ) ) : '';
-        if ( ! wp_verify_nonce( $nonce, 'ms_update_status_nonce' ) ) {
-            wp_die( esc_html__( 'Security check failed.', 'manual-settlement' ) );
+        if ( ! wp_verify_nonce( $nonce, 'invoiceclerk_update_status_nonce' ) ) {
+            wp_die( esc_html__( 'Security check failed.', 'invoiceclerk' ) );
         }
 
         $id     = isset( $_GET['id'] ) ? absint( $_GET['id'] ) : 0;
         $status = isset( $_GET['status'] ) ? sanitize_text_field( wp_unslash( $_GET['status'] ) ) : '';
 
         if ( ! $id || ! in_array( $status, [ 'draft', 'paid', 'sent' ], true ) ) {
-            wp_die( esc_html__( 'Invalid request.', 'manual-settlement' ) );
+            wp_die( esc_html__( 'Invalid request.', 'invoiceclerk' ) );
         }
 
         global $wpdb;
         // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
         $wpdb->update(
-            $wpdb->prefix . 'ms_invoices',
+            $wpdb->prefix . 'invoiceclerk_invoices',
             [ 'status' => $status, 'updated_at' => current_time( 'mysql' ) ],
             [ 'id' => $id ]
         );
 
-        wp_safe_redirect( admin_url( 'admin.php?page=manual-settlement&message=status_updated' ) );
+        wp_safe_redirect( admin_url( 'admin.php?page=invoiceclerk&message=status_updated' ) );
         exit;
     }
 
@@ -357,13 +357,13 @@ class InvoiceManager {
      */
     public function delete_invoice() {
         $nonce = isset( $_GET['_wpnonce'] ) ? sanitize_text_field( wp_unslash( $_GET['_wpnonce'] ) ) : '';
-        if ( ! wp_verify_nonce( $nonce, 'ms_delete_invoice_nonce' ) ) {
-            wp_die( esc_html__( 'Security check failed.', 'manual-settlement' ) );
+        if ( ! wp_verify_nonce( $nonce, 'invoiceclerk_delete_invoice_nonce' ) ) {
+            wp_die( esc_html__( 'Security check failed.', 'invoiceclerk' ) );
         }
 
         $id = isset( $_GET['id'] ) ? absint( $_GET['id'] ) : 0;
         if ( ! $id ) {
-            wp_die( esc_html__( 'Invalid request.', 'manual-settlement' ) );
+            wp_die( esc_html__( 'Invalid request.', 'invoiceclerk' ) );
         }
 
         global $wpdb;
@@ -375,25 +375,25 @@ class InvoiceManager {
         try {
             // Delete Mapping
             // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
-            $wpdb->delete( $wpdb->prefix . 'ms_invoice_order_mapping', [ 'invoice_id' => $id ] );
+            $wpdb->delete( $wpdb->prefix . 'invoiceclerk_invoice_order_mapping', [ 'invoice_id' => $id ] );
             
             // Delete Items
             // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
-            $wpdb->delete( $wpdb->prefix . 'ms_invoice_items', [ 'invoice_id' => $id ] );
+            $wpdb->delete( $wpdb->prefix . 'invoiceclerk_invoice_items', [ 'invoice_id' => $id ] );
 
             // Delete Invoice
             // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
-            $wpdb->delete( $wpdb->prefix . 'ms_invoices', [ 'id' => $id ] );
+            $wpdb->delete( $wpdb->prefix . 'invoiceclerk_invoices', [ 'id' => $id ] );
 
             // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
             $wpdb->query( 'COMMIT' );
             
-            wp_safe_redirect( admin_url( 'admin.php?page=manual-settlement&message=invoice_deleted' ) );
+            wp_safe_redirect( admin_url( 'admin.php?page=invoiceclerk&message=invoice_deleted' ) );
             exit;
         } catch ( \Exception $e ) {
             // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
             $wpdb->query( 'ROLLBACK' );
-            wp_die( esc_html__( 'Failed to delete invoice.', 'manual-settlement' ) );
+            wp_die( esc_html__( 'Failed to delete invoice.', 'invoiceclerk' ) );
         }
     }
 }

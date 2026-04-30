@@ -1,5 +1,5 @@
 <?php
-namespace LunarBite\ManualSettlement;
+namespace InvoiceClerk\ManualSettlement;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -43,7 +43,7 @@ class Installer {
 
         $charset_collate = $wpdb->get_charset_collate();
 
-        $table1 = "CREATE TABLE {$wpdb->prefix}ms_invoices (
+        $table1 = "CREATE TABLE {$wpdb->prefix}invoiceclerk_invoices (
             id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
             customer_id bigint(20) UNSIGNED NOT NULL,
             invoice_number varchar(50) NOT NULL,
@@ -59,7 +59,7 @@ class Installer {
             UNIQUE KEY invoice_number (invoice_number)
         ) $charset_collate;";
 
-        $table2 = "CREATE TABLE {$wpdb->prefix}ms_invoice_items (
+        $table2 = "CREATE TABLE {$wpdb->prefix}invoiceclerk_invoice_items (
             id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
             invoice_id bigint(20) UNSIGNED NOT NULL,
             order_id bigint(20) UNSIGNED NOT NULL,
@@ -73,7 +73,7 @@ class Installer {
             KEY invoice_id (invoice_id)
         ) $charset_collate;";
 
-        $table3 = "CREATE TABLE {$wpdb->prefix}ms_invoice_order_mapping (
+        $table3 = "CREATE TABLE {$wpdb->prefix}invoiceclerk_invoice_order_mapping (
             id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
             invoice_id bigint(20) UNSIGNED NOT NULL,
             order_id bigint(20) UNSIGNED NOT NULL,

@@ -2,19 +2,19 @@
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Plugin Name: Manual Settlement
- * Plugin URI:  https://profiles.wordpress.org/manual-settlement/
+ * Plugin Name: InvoiceClerk – Manual Settlement for WooCommerce
+ * Plugin URI:  https://wordpress.org/plugins/invoiceclerk/
  * Description: Generate batch invoices from WooCommerce orders and manage manual settlements with ease.
  * Version: 0.1.0
- * Author: lunarBite
+ * Author: MD. Rakibul Islam Shazol
  * Author URI: https://profiles.wordpress.org/rakibulislamshazol/
- * Text Domain: manual-settlement
+ * Text Domain: invoiceclerk
  * WC requires at least: 5.0.0
  * Domain Path: /languages/
  * Requires Plugins: woocommerce
  * License: GPL2
  */
-use LunarBite\ManualSettlement\ManualSettlement;
+use InvoiceClerk\ManualSettlement\ManualSettlement;
 
 // don't call the file directly
 if ( ! defined( 'ABSPATH' ) ) {
@@ -34,11 +34,11 @@ require_once __DIR__ . '/vendor/autoload.php';
 /**
  * Load Manual_Settlement Plugin when all plugins loaded
  *
- * @return \LunarBite\ManualSettlement\ManualSettlement
+ * @return \InvoiceClerk\ManualSettlement\ManualSettlement
  */
-function lunarbite_manual_settlement() {
+function invoiceclerk_manual_settlement() {
     return ManualSettlement::init();
 }
 
 // Lets Go....
-lunarbite_manual_settlement();
+invoiceclerk_manual_settlement();

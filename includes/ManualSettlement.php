@@ -1,5 +1,5 @@
 <?php
-namespace LunarBite\ManualSettlement;
+namespace InvoiceClerk\ManualSettlement;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -244,8 +244,8 @@ final class ManualSettlement {
     /**
      * Get templates passing attributes and including the file.
      * You can use this method to load php template file by following:
-     * Example-1: lunarbite_manual_settlement()->get_template( 'admin/custom-meta-fields.php' );
-     * Example-2: lunarbite_manual_settlement()->get_template( 'admin/custom-meta-fields.php', [
+     * Example-1: invoiceclerk_manual_settlement()->get_template( 'admin/custom-meta-fields.php' );
+     * Example-2: invoiceclerk_manual_settlement()->get_template( 'admin/custom-meta-fields.php', [
 			'loop' => $loop,
 			'variation_data' => $variation_data,
 			'variation' => $variation

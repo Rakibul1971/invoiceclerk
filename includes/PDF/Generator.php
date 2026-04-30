@@ -1,5 +1,5 @@
 <?php
-namespace LunarBite\ManualSettlement\PDF;
+namespace InvoiceClerk\ManualSettlement\PDF;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -8,7 +8,7 @@ use TCPDF;
 /**
  * PDF Generator class
  */
-class MS_PDF extends TCPDF {
+class INVOICECLERK_PDF extends TCPDF {
     public $header_data = [];
     public $footer_data = [];
 
@@ -86,13 +86,13 @@ class Generator {
         global $wpdb;
 
         // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
-        $invoice = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$wpdb->prefix}ms_invoices WHERE id = %d", $invoice_id ) );
+        $invoice = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$wpdb->prefix}invoiceclerk_invoices WHERE id = %d", $invoice_id ) );
         if ( ! $invoice ) {
-            wp_die( esc_html__( 'Invoice not found.', 'manual-settlement' ) );
+            wp_die( esc_html__( 'Invoice not found.', 'invoiceclerk' ) );
         }
 
         // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
-        $items = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$wpdb->prefix}ms_invoice_items WHERE invoice_id = %d ORDER BY order_id ASC, item_type ASC", $invoice_id ) );
+        $items = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$wpdb->prefix}invoiceclerk_invoice_items WHERE invoice_id = %d ORDER BY order_id ASC, item_type ASC", $invoice_id ) );
         $customer_id = $invoice->customer_id;
         $customer = get_userdata( $customer_id );
         
@@ -115,10 +115,10 @@ class Generator {
         $store_email   = get_option( 'admin_email' );
 
         // Footer Info
-        $footer_text = get_option( 'ms_footer_text', '' );
+        $footer_text = get_option( 'invoiceclerk_footer_text', '' );
 
         // Create new PDF document
-        $pdf = new MS_PDF( PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false );
+        $pdf = new INVOICECLERK_PDF( PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false );
         $pdf->header_data = [
             'store_name'       => $store_name,
             'store_address'    => $store_address,
@@ -142,7 +142,7 @@ class Generator {
 
         // Set document information
         $pdf->SetCreator( PDF_CREATOR );
-        $pdf->SetAuthor( 'LunarBite' );
+        $pdf->SetAuthor( 'InvoiceClerk' );
         $pdf->SetTitle( $invoice->invoice_number );
 
         $pdf->setPrintHeader( true );
@@ -170,7 +170,7 @@ class Generator {
 
         // Items Grouped by Order
         $current_order_id = 0;
-        $items_html = '<br><table cellpadding="2" cellspacing="0" border="0" width="100%">';
+        $iteinvoiceclerk_html = '<br><table cellpadding="2" cellspacing="0" border="0" width="100%">';
 
         foreach ( $items as $item ) {
             if ( $item->order_id !== $current_order_id ) {
@@ -184,7 +184,7 @@ class Generator {
                     $header_text = 'Order No: ' . $current_order_id . ', Ordered on ' . $order_date;
                 }
 
-                $items_html .= '
+                $iteinvoiceclerk_html .= '
                     <tr>
                         <td colspan="3" style="padding-top:8px;">
                             <span style="font-size:9px; font-weight:bold;">' . $header_text . '</span>
@@ -194,7 +194,7 @@ class Generator {
 
             $qty_display = ( $item->item_type === 'shipping' ) ? '' : number_format( $item->quantity, 2 );
 
-            $items_html .= '
+            $iteinvoiceclerk_html .= '
                 <tr>
                     <td width="10%" align="right" style="font-size:9px;">' . $qty_display . '</td>
                     <td width="70%" style="font-size:9px;">' . esc_html( $item->product_name ) . '</td>
@@ -202,8 +202,8 @@ class Generator {
                 </tr>';
         }
 
-        $items_html .= '</table>';
-        $pdf->writeHTML( $items_html, true, false, true, false, '' );
+        $iteinvoiceclerk_html .= '</table>';
+        $pdf->writeHTML( $iteinvoiceclerk_html, true, false, true, false, '' );
 
         // Position Totals at the bottom
         $pdf->SetY(-60);

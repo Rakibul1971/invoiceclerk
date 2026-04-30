@@ -1,5 +1,5 @@
 <?php
-namespace LunarBite\ManualSettlement;
+namespace InvoiceClerk\ManualSettlement;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -69,7 +69,7 @@ class Assets {
 			'Manual_Settlement_Admin',
 			array(
 				'ajax_url' => admin_url( 'admin-ajax.php' ),
-				'nonce'    => wp_create_nonce( 'ms_admin_nonce' ),
+				'nonce'    => wp_create_nonce( 'invoiceclerk_admin_nonce' ),
 			)
 		);
 	}
