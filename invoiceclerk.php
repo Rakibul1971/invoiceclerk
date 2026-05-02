@@ -21,18 +21,18 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-if ( ! defined( 'MANUAL_SETTLEMENT_FILE' ) ) {
-    define( 'MANUAL_SETTLEMENT_FILE', __FILE__ );
+if ( ! defined( 'INVOICECLERK_FILE' ) ) {
+    define( 'INVOICECLERK_FILE', __FILE__ );
 }
 
-if ( ! defined( 'MANUAL_SETTLEMENT_BASENAME' ) ) {
-    define( 'MANUAL_SETTLEMENT_BASENAME', plugin_basename( __FILE__ ) );
+if ( ! defined( 'INVOICECLERK_BASENAME' ) ) {
+    define( 'INVOICECLERK_BASENAME', plugin_basename( __FILE__ ) );
 }
 
 require_once __DIR__ . '/vendor/autoload.php';
 
 /**
- * Load Manual_Settlement Plugin when all plugins loaded
+ * Load InvoiceClerk Plugin when all plugins loaded
  *
  * @return \InvoiceClerk\ManualSettlement\ManualSettlement
  */

@@ -33,13 +33,13 @@ class Assets {
 	 * @return void
 	 */
 	public function register_scripts() {
-		$admin_script    = MANUAL_SETTLEMENT_PLUGIN_ADMIN_ASSET . '/js/script.js';
-		$frontend_script = MANUAL_SETTLEMENT_PLUGIN_PUBLIC_ASSET . '/js/script.js';
+		$admin_script    = INVOICECLERK_PLUGIN_ADMIN_ASSET . '/js/script.js';
+		$frontend_script = INVOICECLERK_PLUGIN_PUBLIC_ASSET . '/js/script.js';
 
-		wp_register_script( 'daterangepicker', MANUAL_SETTLEMENT_PLUGIN_ADMIN_ASSET . '/js/daterangepicker.min.js', array( 'jquery', 'moment' ), '3.1', true );
+		wp_register_script( 'daterangepicker', INVOICECLERK_PLUGIN_ADMIN_ASSET . '/js/daterangepicker.min.js', array( 'jquery', 'moment' ), '3.1', true );
 
-		wp_register_script( 'manual_settlement_admin_script', $admin_script, array( 'jquery', 'moment', 'daterangepicker' ), MANUAL_SETTLEMENT_PLUGIN_VERSION, true );
-		wp_register_script( 'manual_settlement_script', $frontend_script, array(), MANUAL_SETTLEMENT_PLUGIN_VERSION, true );
+		wp_register_script( 'manual_settlement_admin_script', $admin_script, array( 'jquery', 'moment', 'daterangepicker' ), INVOICECLERK_PLUGIN_VERSION, true );
+		wp_register_script( 'manual_settlement_script', $frontend_script, array(), INVOICECLERK_PLUGIN_VERSION, true );
 	}
 
 	/**
@@ -48,12 +48,12 @@ class Assets {
 	 * @return void
 	 */
 	public function register_styles() {
-		$admin_style    = MANUAL_SETTLEMENT_PLUGIN_ADMIN_ASSET . '/css/style.css';
-		$frontend_style = MANUAL_SETTLEMENT_PLUGIN_PUBLIC_ASSET . '/css/style.css';
+		$admin_style    = INVOICECLERK_PLUGIN_ADMIN_ASSET . '/css/style.css';
+		$frontend_style = INVOICECLERK_PLUGIN_PUBLIC_ASSET . '/css/style.css';
 
-		wp_register_style( 'daterangepicker', MANUAL_SETTLEMENT_PLUGIN_ADMIN_ASSET . '/css/daterangepicker.css', array(), '3.1' );
-		wp_register_style( 'manual_settlement_admin_style', $admin_style, array( 'daterangepicker' ), MANUAL_SETTLEMENT_PLUGIN_VERSION );
-		wp_register_style( 'manual_settlement_style', $frontend_style, array(), MANUAL_SETTLEMENT_PLUGIN_VERSION );
+		wp_register_style( 'daterangepicker', INVOICECLERK_PLUGIN_ADMIN_ASSET . '/css/daterangepicker.css', array(), '3.1' );
+		wp_register_style( 'manual_settlement_admin_style', $admin_style, array( 'daterangepicker' ), INVOICECLERK_PLUGIN_VERSION );
+		wp_register_style( 'manual_settlement_style', $frontend_style, array(), INVOICECLERK_PLUGIN_VERSION );
 	}
 
 	/**
@@ -66,7 +66,7 @@ class Assets {
 		wp_enqueue_script( 'manual_settlement_admin_script' );
 		wp_localize_script(
 			'manual_settlement_admin_script',
-			'Manual_Settlement_Admin',
+			'InvoiceClerk_Admin',
 			array(
 				'ajax_url' => admin_url( 'admin-ajax.php' ),
 				'nonce'    => wp_create_nonce( 'invoiceclerk_admin_nonce' ),
@@ -83,7 +83,7 @@ class Assets {
 		wp_enqueue_script( 'manual_settlement_script' );
 		wp_localize_script(
 			'manual_settlement_script',
-			'Manual_Settlement',
+			'InvoiceClerk',
 			array()
 		);
 	}

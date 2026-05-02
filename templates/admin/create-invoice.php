@@ -110,11 +110,11 @@ jQuery(document).ready(function($) {
         $('#invoiceclerk-fetch-orders-btn').prop('disabled', true).text('<?php esc_html_e( 'Fetching...', 'invoiceclerk' ); ?>');
 
         $.ajax({
-            url: Manual_Settlement_Admin.ajax_url,
+            url: InvoiceClerk_Admin.ajax_url,
             type: 'POST',
             data: {
                 action: 'invoiceclerk_fetch_orders',
-                nonce: Manual_Settlement_Admin.nonce,
+                nonce: InvoiceClerk_Admin.nonce,
                 customer_id: customerId,
                 start_date: startDate,
                 end_date: endDate

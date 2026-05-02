@@ -42,8 +42,8 @@ final class ManualSettlement {
     private function __construct() {
         $this->define_constants();
 
-        register_activation_hook( MANUAL_SETTLEMENT_FILE, [ $this, 'activate' ] );
-        register_deactivation_hook( MANUAL_SETTLEMENT_FILE, [ $this, 'deactivate' ] );
+        register_activation_hook( INVOICECLERK_FILE, [ $this, 'activate' ] );
+        register_deactivation_hook( INVOICECLERK_FILE, [ $this, 'deactivate' ] );
 
         add_action( 'plugins_loaded', [ $this, 'init_plugin' ] );
         add_action( 'woocommerce_flush_rewrite_rules', [ $this, 'flush_rewrite_rules' ] );
@@ -129,17 +129,17 @@ final class ManualSettlement {
      * @return void
      */
     public function define_constants() {
-        defined( 'MANUAL_SETTLEMENT_PLUGIN_VERSION' ) || define( 'MANUAL_SETTLEMENT_PLUGIN_VERSION', $this->version );
-        defined( 'MANUAL_SETTLEMENT_DIR' ) || define( 'MANUAL_SETTLEMENT_DIR', dirname( MANUAL_SETTLEMENT_FILE ) );
-        defined( 'MANUAL_SETTLEMENT_INC_DIR' ) || define( 'MANUAL_SETTLEMENT_INC_DIR', MANUAL_SETTLEMENT_DIR . '/includes' );
-        defined( 'MANUAL_SETTLEMENT_TEMPLATE_DIR' ) || define( 'MANUAL_SETTLEMENT_TEMPLATE_DIR', MANUAL_SETTLEMENT_DIR . '/templates' );
-        defined( 'MANUAL_SETTLEMENT_PLUGIN_ASSET' ) || define( 'MANUAL_SETTLEMENT_PLUGIN_ASSET', plugins_url( 'assets', MANUAL_SETTLEMENT_FILE ) );
-        defined( 'MANUAL_SETTLEMENT_PLUGIN_ADMIN_ASSET' ) || define( 'MANUAL_SETTLEMENT_PLUGIN_ADMIN_ASSET' , MANUAL_SETTLEMENT_PLUGIN_ASSET . '/admin' );
-        defined( 'MANUAL_SETTLEMENT_PLUGIN_PUBLIC_ASSET' ) || define( 'MANUAL_SETTLEMENT_PLUGIN_PUBLIC_ASSET' , MANUAL_SETTLEMENT_PLUGIN_ASSET . '/public' );
+        defined( 'INVOICECLERK_PLUGIN_VERSION' ) || define( 'INVOICECLERK_PLUGIN_VERSION', $this->version );
+        defined( 'INVOICECLERK_DIR' ) || define( 'INVOICECLERK_DIR', dirname( INVOICECLERK_FILE ) );
+        defined( 'INVOICECLERK_INC_DIR' ) || define( 'INVOICECLERK_INC_DIR', INVOICECLERK_DIR . '/includes' );
+        defined( 'INVOICECLERK_TEMPLATE_DIR' ) || define( 'INVOICECLERK_TEMPLATE_DIR', INVOICECLERK_DIR . '/templates' );
+        defined( 'INVOICECLERK_PLUGIN_ASSET' ) || define( 'INVOICECLERK_PLUGIN_ASSET', plugins_url( 'assets', INVOICECLERK_FILE ) );
+        defined( 'INVOICECLERK_PLUGIN_ADMIN_ASSET' ) || define( 'INVOICECLERK_PLUGIN_ADMIN_ASSET' , INVOICECLERK_PLUGIN_ASSET . '/admin' );
+        defined( 'INVOICECLERK_PLUGIN_PUBLIC_ASSET' ) || define( 'INVOICECLERK_PLUGIN_PUBLIC_ASSET' , INVOICECLERK_PLUGIN_ASSET . '/public' );
 
         // give a way to turn off loading styles and scripts from parent theme
-        defined( 'MANUAL_SETTLEMENT_LOAD_STYLE' ) || define( 'MANUAL_SETTLEMENT_LOAD_STYLE', true );
-        defined( 'MANUAL_SETTLEMENT_LOAD_SCRIPTS' ) || define( 'MANUAL_SETTLEMENT_LOAD_SCRIPTS', true );
+        defined( 'INVOICECLERK_LOAD_STYLE' ) || define( 'INVOICECLERK_LOAD_STYLE', true );
+        defined( 'INVOICECLERK_LOAD_SCRIPTS' ) || define( 'INVOICECLERK_LOAD_SCRIPTS', true );
     }
 
     /**
@@ -226,7 +226,7 @@ final class ManualSettlement {
 	 * @return string
 	 */
 	public function plugin_url() {
-		return untrailingslashit( plugins_url( '/', MANUAL_SETTLEMENT_FILE ) );
+		return untrailingslashit( plugins_url( '/', INVOICECLERK_FILE ) );
 	}
 
     /**
@@ -236,7 +236,7 @@ final class ManualSettlement {
      * @return string
      */
     public function get_template_path( $name ) {
-        $template = untrailingslashit( MANUAL_SETTLEMENT_TEMPLATE_DIR ) . '/' . untrailingslashit( $name );
+        $template = untrailingslashit( INVOICECLERK_TEMPLATE_DIR ) . '/' . untrailingslashit( $name );
 
         return apply_filters( 'manual_settlement_template', $template, $name );
     }
@@ -266,7 +266,7 @@ final class ManualSettlement {
         $template_path = $this->get_template_path( $template_name );
 
         if ( ! file_exists( $template_path ) ) {
-            _doing_it_wrong( __FUNCTION__, sprintf( '<code>%s</code> does not exist.', esc_html( $template_path ) ), esc_html( MANUAL_SETTLEMENT_PLUGIN_VERSION ) );
+            _doing_it_wrong( __FUNCTION__, sprintf( '<code>%s</code> does not exist.', esc_html( $template_path ) ), esc_html( INVOICECLERK_PLUGIN_VERSION ) );
 
             return;
         }

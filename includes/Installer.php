@@ -30,7 +30,7 @@ class Installer {
             update_option( 'manual_settlement_installed', time() );
         }
 
-        update_option( 'manual_settlement_version', MANUAL_SETTLEMENT_PLUGIN_VERSION );
+        update_option( 'manual_settlement_version', INVOICECLERK_PLUGIN_VERSION );
     }
 
     /**
