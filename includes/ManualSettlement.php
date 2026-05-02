@@ -90,7 +90,7 @@ final class ManualSettlement {
         $installer = new Installer();
         $installer->run();
 
-        // Rewrite rules during manual_settlement activation
+        // Rewrite rules during invoiceclerk activation
         if ( $this->has_woocommerce() ) {
             $this->flush_rewrite_rules();
         }
@@ -106,7 +106,7 @@ final class ManualSettlement {
 	}
 
     /**
-     * Flush rewrite rules after manual_settlement is activated or woocommerce is activated
+     * Flush rewrite rules after invoiceclerk is activated or woocommerce is activated
      *
      * @since 3.2.8
      */
@@ -151,7 +151,7 @@ final class ManualSettlement {
         $this->includes();
         $this->init_hooks();
 
-        do_action( 'manual_settlement_loaded' );
+        do_action( 'invoiceclerk_loaded' );
     }
 
     /**
@@ -188,7 +188,7 @@ final class ManualSettlement {
     /**
      * Executed after all plugins are loaded
      *
-     * At this point manual_settlement Pro is loaded
+     * At this point invoiceclerk Pro is loaded
      *
      * @since 2.8.7
      *
@@ -238,14 +238,14 @@ final class ManualSettlement {
     public function get_template_path( $name ) {
         $template = untrailingslashit( INVOICECLERK_TEMPLATE_DIR ) . '/' . untrailingslashit( $name );
 
-        return apply_filters( 'manual_settlement_template', $template, $name );
+        return apply_filters( 'invoiceclerk_template', $template, $name );
     }
 
     /**
      * Get templates passing attributes and including the file.
      * You can use this method to load php template file by following:
-     * Example-1: invoiceclerk_manual_settlement()->get_template( 'admin/custom-meta-fields.php' );
-     * Example-2: invoiceclerk_manual_settlement()->get_template( 'admin/custom-meta-fields.php', [
+     * Example-1: invoiceclerk()->get_template( 'admin/custom-meta-fields.php' );
+     * Example-2: invoiceclerk()->get_template( 'admin/custom-meta-fields.php', [
 			'loop' => $loop,
 			'variation_data' => $variation_data,
 			'variation' => $variation
@@ -271,11 +271,11 @@ final class ManualSettlement {
             return;
         }
 
-        do_action( 'manual_settlement_before_template_part', $template_name, $args );
+        do_action( 'invoiceclerk_before_template_part', $template_name, $args );
 
         // phpcs:ignore WordPressVIPMinimum.Files.IncludingFile.UsingVariable
         include $this->get_template_path( $template_name );
 
-        do_action( 'manual_settlement_after_template_part', $template_name, $args );
+        do_action( 'invoiceclerk_after_template_part', $template_name, $args );
     }
 }

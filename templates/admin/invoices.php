@@ -6,7 +6,7 @@ defined( 'ABSPATH' ) || exit;
 
 global $wpdb;
 // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
-$manual_settlement_invoices = $wpdb->get_results( "SELECT * FROM {$wpdb->prefix}invoiceclerk_invoices ORDER BY created_at DESC" );
+$invoiceclerk_invoices = $wpdb->get_results( "SELECT * FROM {$wpdb->prefix}invoiceclerk_invoices ORDER BY created_at DESC" );
 ?>
 <div class="wrap">
     <h1 class="wp-heading-inline"><?php esc_html_e( 'Invoices', 'invoiceclerk' ); ?></h1>
@@ -15,20 +15,20 @@ $manual_settlement_invoices = $wpdb->get_results( "SELECT * FROM {$wpdb->prefix}
 
     <?php 
     // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-    $manual_settlement_message = isset( $_GET['message'] ) ? sanitize_text_field( wp_unslash( $_GET['message'] ) ) : '';
-    if ( 'invoice_created' === $manual_settlement_message ) : ?>
+    $invoiceclerk_message = isset( $_GET['message'] ) ? sanitize_text_field( wp_unslash( $_GET['message'] ) ) : '';
+    if ( 'invoice_created' === $invoiceclerk_message ) : ?>
         <div class="notice notice-success is-dismissible">
             <p><?php esc_html_e( 'Invoice created successfully.', 'invoiceclerk' ); ?></p>
         </div>
     <?php endif; ?>
 
-    <?php if ( 'status_updated' === $manual_settlement_message ) : ?>
+    <?php if ( 'status_updated' === $invoiceclerk_message ) : ?>
         <div class="notice notice-success is-dismissible">
             <p><?php esc_html_e( 'Invoice status updated successfully.', 'invoiceclerk' ); ?></p>
         </div>
     <?php endif; ?>
 
-    <?php if ( 'invoice_deleted' === $manual_settlement_message ) : ?>
+    <?php if ( 'invoice_deleted' === $invoiceclerk_message ) : ?>
         <div class="notice notice-info is-dismissible">
             <p><?php esc_html_e( 'Invoice and related data deleted successfully.', 'invoiceclerk' ); ?></p>
         </div>
@@ -46,31 +46,31 @@ $manual_settlement_invoices = $wpdb->get_results( "SELECT * FROM {$wpdb->prefix}
             </tr>
         </thead>
         <tbody>
-            <?php if ( empty( $manual_settlement_invoices ) ) : ?>
+            <?php if ( empty( $invoiceclerk_invoices ) ) : ?>
                 <tr>
                     <td colspan="6"><?php esc_html_e( 'No invoices found.', 'invoiceclerk' ); ?></td>
                 </tr>
             <?php else : ?>
-                <?php foreach ( $manual_settlement_invoices as $manual_settlement_invoice ) : 
-                    $manual_settlement_user = get_userdata( $manual_settlement_invoice->customer_id );
-                    $manual_settlement_customer_name = $manual_settlement_user ? $manual_settlement_user->display_name : __( 'Unknown', 'invoiceclerk' );
+                <?php foreach ( $invoiceclerk_invoices as $invoiceclerk_invoice ) : 
+                    $invoiceclerk_user = get_userdata( $invoiceclerk_invoice->customer_id );
+                    $invoiceclerk_customer_name = $invoiceclerk_user ? $invoiceclerk_user->display_name : __( 'Unknown', 'invoiceclerk' );
                     ?>
                     <tr>
-                        <td><strong><?php echo esc_html( $manual_settlement_invoice->invoice_number ); ?></strong></td>
-                        <td><?php echo esc_html( $manual_settlement_customer_name ); ?></td>
-                        <td><?php echo esc_html( $manual_settlement_invoice->start_date . ' - ' . $manual_settlement_invoice->end_date ); ?></td>
-                        <td><?php echo wp_kses_post( wc_price( $manual_settlement_invoice->total ) ); ?></td>
-                        <td><mark class="order-status status-<?php echo esc_attr( $manual_settlement_invoice->status ); ?>"><span><?php echo esc_html( ucfirst( $manual_settlement_invoice->status ) ); ?></span></mark></td>
+                        <td><strong><?php echo esc_html( $invoiceclerk_invoice->invoice_number ); ?></strong></td>
+                        <td><?php echo esc_html( $invoiceclerk_customer_name ); ?></td>
+                        <td><?php echo esc_html( $invoiceclerk_invoice->start_date . ' - ' . $invoiceclerk_invoice->end_date ); ?></td>
+                        <td><?php echo wp_kses_post( wc_price( $invoiceclerk_invoice->total ) ); ?></td>
+                        <td><mark class="order-status status-<?php echo esc_attr( $invoiceclerk_invoice->status ); ?>"><span><?php echo esc_html( ucfirst( $invoiceclerk_invoice->status ) ); ?></span></mark></td>
                         <td>
-                            <a href="<?php echo esc_url( wp_nonce_url( admin_url( 'admin-post.php?action=invoiceclerk_download_invoice&id=' . $manual_settlement_invoice->id ), 'invoiceclerk_download_invoice_nonce' ) ); ?>" class="button button-small"><?php esc_html_e( 'Download PDF', 'invoiceclerk' ); ?></a>
+                            <a href="<?php echo esc_url( wp_nonce_url( admin_url( 'admin-post.php?action=invoiceclerk_download_invoice&id=' . $invoiceclerk_invoice->id ), 'invoiceclerk_download_invoice_nonce' ) ); ?>" class="button button-small"><?php esc_html_e( 'Download PDF', 'invoiceclerk' ); ?></a>
                             
-                            <?php if ( $manual_settlement_invoice->status !== 'paid' ) : ?>
-                                <a href="<?php echo esc_url( wp_nonce_url( admin_url( 'admin-post.php?action=invoiceclerk_update_invoice_status&id=' . $manual_settlement_invoice->id . '&status=paid' ), 'invoiceclerk_update_status_nonce' ) ); ?>" class="button button-small"><?php esc_html_e( 'Mark as Paid', 'invoiceclerk' ); ?></a>
+                            <?php if ( $invoiceclerk_invoice->status !== 'paid' ) : ?>
+                                <a href="<?php echo esc_url( wp_nonce_url( admin_url( 'admin-post.php?action=invoiceclerk_update_invoice_status&id=' . $invoiceclerk_invoice->id . '&status=paid' ), 'invoiceclerk_update_status_nonce' ) ); ?>" class="button button-small"><?php esc_html_e( 'Mark as Paid', 'invoiceclerk' ); ?></a>
                             <?php else : ?>
-                                <a href="<?php echo esc_url( wp_nonce_url( admin_url( 'admin-post.php?action=invoiceclerk_update_invoice_status&id=' . $manual_settlement_invoice->id . '&status=draft' ), 'invoiceclerk_update_status_nonce' ) ); ?>" class="button button-small"><?php esc_html_e( 'Mark as Draft', 'invoiceclerk' ); ?></a>
+                                <a href="<?php echo esc_url( wp_nonce_url( admin_url( 'admin-post.php?action=invoiceclerk_update_invoice_status&id=' . $invoiceclerk_invoice->id . '&status=draft' ), 'invoiceclerk_update_status_nonce' ) ); ?>" class="button button-small"><?php esc_html_e( 'Mark as Draft', 'invoiceclerk' ); ?></a>
                             <?php endif; ?>
                             
-                            <a href="<?php echo esc_url( wp_nonce_url( admin_url( 'admin-post.php?action=invoiceclerk_delete_invoice&id=' . $manual_settlement_invoice->id ), 'invoiceclerk_delete_invoice_nonce' ) ); ?>" 
+                            <a href="<?php echo esc_url( wp_nonce_url( admin_url( 'admin-post.php?action=invoiceclerk_delete_invoice&id=' . $invoiceclerk_invoice->id ), 'invoiceclerk_delete_invoice_nonce' ) ); ?>" 
                                class="button button-small invoiceclerk-delete-btn" 
                                style="color: #b32d2e; border-color: #b32d2e;"
                                onclick="return confirm('<?php echo esc_js( __( 'Are you sure you want to delete this invoice and release all mapped orders?', 'invoiceclerk' ) ); ?>');">

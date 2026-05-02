@@ -36,9 +36,9 @@ require_once __DIR__ . '/vendor/autoload.php';
  *
  * @return \InvoiceClerk\ManualSettlement\ManualSettlement
  */
-function invoiceclerk_manual_settlement() {
+function invoiceclerk() {
     return ManualSettlement::init();
 }
 
 // Lets Go....
-invoiceclerk_manual_settlement();
+invoiceclerk();

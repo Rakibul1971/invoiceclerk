@@ -16,9 +16,9 @@ defined( 'ABSPATH' ) || exit;
                         <select name="customer_id" id="invoiceclerk-customer-id" class="regular-text" required>
                             <option value=""><?php esc_html_e( 'Select a customer...', 'invoiceclerk' ); ?></option>
                             <?php
-                            $manual_settlement_customers = get_users( [ 'role' => 'customer' ] );
-                            foreach ( $manual_settlement_customers as $manual_settlement_customer ) {
-                                echo '<option value="' . esc_attr( $manual_settlement_customer->ID ) . '">' . esc_html( $manual_settlement_customer->display_name ) . ' (' . esc_html( $manual_settlement_customer->user_email ) . ')</option>';
+                            $invoiceclerk_customers = get_users( [ 'role' => 'customer' ] );
+                            foreach ( $invoiceclerk_customers as $invoiceclerk_customer ) {
+                                echo '<option value="' . esc_attr( $invoiceclerk_customer->ID ) . '">' . esc_html( $invoiceclerk_customer->display_name ) . ' (' . esc_html( $invoiceclerk_customer->user_email ) . ')</option>';
                             }
                             ?>
                         </select>

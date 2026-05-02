@@ -24,13 +24,13 @@ class Installer {
      * @return void
      */
     private function add_version() {
-        $installed = get_option( 'manual_settlement_installed' );
+        $installed = get_option( 'invoiceclerk_installed' );
 
         if ( ! $installed ) {
-            update_option( 'manual_settlement_installed', time() );
+            update_option( 'invoiceclerk_installed', time() );
         }
 
-        update_option( 'manual_settlement_version', INVOICECLERK_PLUGIN_VERSION );
+        update_option( 'invoiceclerk_version', INVOICECLERK_PLUGIN_VERSION );
     }
 
     /**

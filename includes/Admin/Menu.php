@@ -69,7 +69,7 @@ class Menu {
      * @return void
      */
     public function invoices_page() {
-        invoiceclerk_manual_settlement()->get_template( 'admin/invoices.php' );
+        invoiceclerk()->get_template( 'admin/invoices.php' );
     }
 
     /**
@@ -78,7 +78,7 @@ class Menu {
      * @return void
      */
     public function create_invoice_page() {
-        invoiceclerk_manual_settlement()->get_template( 'admin/create-invoice.php' );
+        invoiceclerk()->get_template( 'admin/create-invoice.php' );
     }
 
     /**

@@ -36,10 +36,10 @@ class Assets {
 		$admin_script    = INVOICECLERK_PLUGIN_ADMIN_ASSET . '/js/script.js';
 		$frontend_script = INVOICECLERK_PLUGIN_PUBLIC_ASSET . '/js/script.js';
 
-		wp_register_script( 'daterangepicker', INVOICECLERK_PLUGIN_ADMIN_ASSET . '/js/daterangepicker.min.js', array( 'jquery', 'moment' ), '3.1', true );
+		wp_register_script( 'invoiceclerk_daterangepicker', INVOICECLERK_PLUGIN_ADMIN_ASSET . '/js/daterangepicker.min.js', array( 'jquery', 'moment' ), '3.1', true );
 
-		wp_register_script( 'manual_settlement_admin_script', $admin_script, array( 'jquery', 'moment', 'daterangepicker' ), INVOICECLERK_PLUGIN_VERSION, true );
-		wp_register_script( 'manual_settlement_script', $frontend_script, array(), INVOICECLERK_PLUGIN_VERSION, true );
+		wp_register_script( 'invoiceclerk_admin_script', $admin_script, array( 'jquery', 'moment', 'invoiceclerk_daterangepicker' ), INVOICECLERK_PLUGIN_VERSION, true );
+		wp_register_script( 'invoiceclerk_script', $frontend_script, array(), INVOICECLERK_PLUGIN_VERSION, true );
 	}
 
 	/**
@@ -51,9 +51,9 @@ class Assets {
 		$admin_style    = INVOICECLERK_PLUGIN_ADMIN_ASSET . '/css/style.css';
 		$frontend_style = INVOICECLERK_PLUGIN_PUBLIC_ASSET . '/css/style.css';
 
-		wp_register_style( 'daterangepicker', INVOICECLERK_PLUGIN_ADMIN_ASSET . '/css/daterangepicker.css', array(), '3.1' );
-		wp_register_style( 'manual_settlement_admin_style', $admin_style, array( 'daterangepicker' ), INVOICECLERK_PLUGIN_VERSION );
-		wp_register_style( 'manual_settlement_style', $frontend_style, array(), INVOICECLERK_PLUGIN_VERSION );
+		wp_register_style( 'invoiceclerk_daterangepicker', INVOICECLERK_PLUGIN_ADMIN_ASSET . '/css/daterangepicker.css', array(), '3.1' );
+		wp_register_style( 'invoiceclerk_admin_style', $admin_style, array( 'invoiceclerk_daterangepicker' ), INVOICECLERK_PLUGIN_VERSION );
+		wp_register_style( 'invoiceclerk_style', $frontend_style, array(), INVOICECLERK_PLUGIN_VERSION );
 	}
 
 	/**
@@ -62,10 +62,10 @@ class Assets {
 	 * @return void
 	 */
 	public function enqueue_admin_scripts() {
-		wp_enqueue_style( 'manual_settlement_admin_style' );
-		wp_enqueue_script( 'manual_settlement_admin_script' );
+		wp_enqueue_style( 'invoiceclerk_admin_style' );
+		wp_enqueue_script( 'invoiceclerk_admin_script' );
 		wp_localize_script(
-			'manual_settlement_admin_script',
+			'invoiceclerk_admin_script',
 			'InvoiceClerk_Admin',
 			array(
 				'ajax_url' => admin_url( 'admin-ajax.php' ),
@@ -80,9 +80,9 @@ class Assets {
 	 * @return void
 	 */
 	public function enqueue_front_scripts() {
-		wp_enqueue_script( 'manual_settlement_script' );
+		wp_enqueue_script( 'invoiceclerk_script' );
 		wp_localize_script(
-			'manual_settlement_script',
+			'invoiceclerk_script',
 			'InvoiceClerk',
 			array()
 		);
