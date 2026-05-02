@@ -7,11 +7,11 @@ set -e
 cd "$(dirname "$0")"
 cd ..
 DIR=$(pwd)
-BUILD_DIR="$DIR/build/manual-settlement"
+BUILD_DIR="$DIR/build/invoiceclerk"
 
-VERSION=$(grep -E '^[[:space:]]*\* Version:' "$DIR/manual-settlement.php" | head -n1 | sed -E 's/.*Version:[[:space:]]*([^[:space:]]+).*/\1/')
+VERSION=$(grep -E '^[[:space:]]*\* Version:' "$DIR/invoiceclerk.php" | head -n1 | sed -E 's/.*Version:[[:space:]]*([^[:space:]]+).*/\1/')
 if [ -z "$VERSION" ]; then
-    error "Could not determine version from manual-settlement.php"
+    error "Could not determine version from invoiceclerk.php"
     exit 1
 fi
 
@@ -37,7 +37,7 @@ warning() {
     echo -e "\n${YELLOW_BOLD}$1${COLOR_RESET}\n"
 }
 
-status "💃 Time to build the Manual Settlement ZIP file 🕺"
+status "💃 Time to build the InvoiceClerk ZIP file 🕺"
 
 # remove the build directory if exists and create one
 rm -rf "$DIR/build"
@@ -50,7 +50,7 @@ status "Generating build... 👷‍♀️"
 
 # Copy all files
 status "Copying files... ✌️"
-FILES=(manual-settlement.php readme.txt dist includes templates assets languages composer.json composer.lock)
+FILES=(invoiceclerk.php readme.txt dist includes templates assets languages composer.json composer.lock)
 
 for file in ${FILES[@]}; do
     if [ -f "$file" ] || [ -d "$file" ]; then
@@ -77,10 +77,10 @@ find vendor/tecnickcom/tcpdf/fonts -type f ! -name "helvetica*" ! -name "times*"
 # go one up, to the build dir
 status "Creating archive... 🎁"
 cd ..
-zip -r -q manual-settlement-${VERSION}.zip manual-settlement
+zip -r -q invoiceclerk-${VERSION}.zip invoiceclerk
 
 # remove the source directory
-rm -rf manual-settlement
+rm -rf invoiceclerk
 
-success "Done. You've built Manual Settlement! 🎉 "
-echo -e "\n${BLUE_BOLD}File Path${COLOR_RESET}: ${YELLOW_BOLD}$(pwd)/manual-settlement-${VERSION}.zip${COLOR_RESET} \n"
+success "Done. You've built InvoiceClerk! 🎉 "
+echo -e "\n${BLUE_BOLD}File Path${COLOR_RESET}: ${YELLOW_BOLD}$(pwd)/invoiceclerk-${VERSION}.zip${COLOR_RESET} \n"
