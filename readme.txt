@@ -1,5 +1,5 @@
 === InvoiceClerk – Manual Settlement for WooCommerce ===
-Contributors: MD. Rakibul Islam Shazol
+Contributors: rakibulislamshazol
 Tags: woocommerce, invoice, settlement, manual settlement, batch invoice
 Requires at least: 5.0
 Tested up to: 6.9

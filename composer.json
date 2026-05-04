@@ -9,13 +9,13 @@
     },
     "authors": [
         {
-            "name": "lunarBite",
+            "name": "MD. Rakibul Islam Shazol",
             "email": "shazolislam8@gmail.com",
             "homepage": "https://wordpress.org/plugins/invoiceclerk"
         }
     ],
     "require": {
-        "tecnickcom/tcpdf": "^6.7"
+        "mpdf/mpdf": "^8.2"
     },
     "minimum-stability": "dev",
     "require-dev": {

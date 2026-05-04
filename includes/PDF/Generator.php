@@ -3,73 +3,7 @@ namespace InvoiceClerk\ManualSettlement\PDF;
 
 defined( 'ABSPATH' ) || exit;
 
-use TCPDF;
-
-/**
- * PDF Generator class
- */
-class INVOICECLERK_PDF extends TCPDF {
-    public $header_data = [];
-    public $footer_data = [];
-
-    public function Header() {
-        $this->SetY(15);
-        $this->SetFont('helvetica', '', 9);
-        $html = '
-        <table cellpadding="0" cellspacing="0" border="0" width="100%">
-            <tr>
-                <td width="60%">
-                    <span style="font-size:20px; font-weight:bold; color:#B8860B;">' . strtoupper( esc_html( $this->header_data['store_name'] ) ) . '</span><br><br><br>
-                    <span style="font-size:9px; line-height:1.5;">
-                        ' . gmdate( 'j F Y' ) . '<br>
-                        E-Mail: ' . esc_html( $this->header_data['store_email'] ) . '
-                    </span>
-                </td>
-                <td width="40%" align="right">
-                    <span style="font-size:8px; border-bottom: 0.5px solid #000;">' . esc_html( $this->header_data['store_name'] ) . ', ' . esc_html( $this->header_data['store_address'] ) . ', ' . esc_html( $this->header_data['store_postcode'] ) . ' ' . esc_html( $this->header_data['store_city'] ) . '</span><br><br>
-                    <span style="font-size:10px; font-weight:bold;">' . esc_html( $this->header_data['customer_name'] ) . '</span><br>
-                    <span style="font-size:9px;">
-                        ' . esc_html( $this->header_data['customer_address'] ) . '<br>
-                        ' . esc_html( $this->header_data['customer_city'] ) . '<br>
-                        Customer No: ' . esc_html( $this->header_data['customer_id'] ) . '
-                    </span>
-                </td>
-            </tr>
-        </table>';
-        $this->writeHTML($html, true, false, true, false, '');
-    }
-
-    public function Footer() {
-        $this->SetY(-40);
-        $this->SetFont('helvetica', '', 8);
-        $this->SetTextColor(0, 0, 0);
-        
-        // Footer Message
-        if ( ! empty( $this->footer_data['footer_text'] ) ) {
-            $this->writeHTML('<span style="font-size:9px;">' . nl2br( esc_html( $this->footer_data['footer_text'] ) ) . '</span>', true, false, true, false, '');
-            $this->Ln(2);
-        }
-
-        $this->SetTextColor(85, 85, 85);
-        $html = '
-        <table cellpadding="0" cellspacing="0" border="0" width="100%" style="border-top:1px solid #ccc;">
-            <tr><td colspan="3">&nbsp;</td></tr>
-            <tr>
-                <td width="33%">
-                    ' . $this->footer_data['store_name'] . '<br>
-                    ' . $this->footer_data['store_address'] . '<br>
-                    ' . $this->footer_data['store_postcode'] . ' ' . $this->footer_data['store_city'] . '
-                </td>
-                <td width="33%" align="center">&nbsp;</td>
-                <td width="33%" align="right">
-                    E-Mail: ' . $this->footer_data['store_email'] . '<br>
-                    Web: ' . $this->footer_data['home_url'] . '
-                </td>
-            </tr>
-        </table>';
-        $this->writeHTML($html, true, false, true, false, '');
-    }
-}
+use Mpdf\Mpdf;
 
 /**
  * PDF Generator class
@@ -117,9 +51,7 @@ class Generator {
         // Footer Info
         $footer_text = get_option( 'invoiceclerk_footer_text', '' );
 
-        // Create new PDF document
-        $pdf = new INVOICECLERK_PDF( PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false );
-        $pdf->header_data = [
+        $header_data = [
             'store_name'       => $store_name,
             'store_address'    => $store_address,
             'store_postcode'   => $store_postcode,
@@ -130,7 +62,8 @@ class Generator {
             'customer_city'    => $billing_postcode . ' ' . $billing_city,
             'customer_id'      => $customer_id,
         ];
-        $pdf->footer_data = [
+        
+        $footer_data = [
             'store_name'     => $store_name,
             'store_address'  => $store_address,
             'store_postcode' => $store_postcode,
@@ -140,37 +73,87 @@ class Generator {
             'home_url'       => home_url(),
         ];
 
-        // Set document information
-        $pdf->SetCreator( PDF_CREATOR );
-        $pdf->SetAuthor( 'InvoiceClerk' );
-        $pdf->SetTitle( $invoice->invoice_number );
+        // Create new PDF document
+        $mpdf = new Mpdf([
+            'mode'          => 'utf-8',
+            'format'        => 'A4',
+            'margin_left'   => 15,
+            'margin_right'  => 15,
+            'margin_top'    => 60,
+            'margin_bottom' => 45,
+            'margin_header' => 15,
+            'margin_footer' => 10,
+            'default_font'  => 'helvetica',
+            'default_font_size' => 9,
+        ]);
 
-        $pdf->setPrintHeader( true );
-        $pdf->setPrintFooter( true );
-        $pdf->SetMargins( 15, 60, 15 ); 
-        $pdf->SetAutoPageBreak( TRUE, 50 ); 
+        $mpdf->SetCreator( 'InvoiceClerk' );
+        $mpdf->SetAuthor( 'InvoiceClerk' );
+        $mpdf->SetTitle( $invoice->invoice_number );
 
-        // Set base font
-        $pdf->SetFont('helvetica', '', 9);
+        // Build Header HTML
+        $header_html = '
+        <table cellpadding="0" cellspacing="0" border="0" width="100%" style="font-family: helvetica;">
+            <tr>
+                <td width="60%" valign="top">
+                    <span style="font-size:20px; font-weight:bold; color:#B8860B;">' . strtoupper( esc_html( $header_data['store_name'] ) ) . '</span><br><br><br>
+                    <span style="font-size:9px; line-height:1.5;">
+                        ' . gmdate( 'j F Y' ) . '<br>
+                        E-Mail: ' . esc_html( $header_data['store_email'] ) . '
+                    </span>
+                </td>
+                <td width="40%" align="right" valign="top">
+                    <span style="font-size:8px; border-bottom: 0.5px solid #000;">' . esc_html( $header_data['store_name'] ) . ', ' . esc_html( $header_data['store_address'] ) . ', ' . esc_html( $header_data['store_postcode'] ) . ' ' . esc_html( $header_data['store_city'] ) . '</span><br><br>
+                    <span style="font-size:10px; font-weight:bold;">' . esc_html( $header_data['customer_name'] ) . '</span><br>
+                    <span style="font-size:9px;">
+                        ' . esc_html( $header_data['customer_address'] ) . '<br>
+                        ' . esc_html( $header_data['customer_city'] ) . '<br>
+                        Customer No: ' . esc_html( $header_data['customer_id'] ) . '
+                    </span>
+                </td>
+            </tr>
+        </table>';
+        
+        $mpdf->SetHTMLHeader($header_html);
 
-        // Add a page
-        $pdf->AddPage();
+        // Build Footer HTML
+        $footer_html = '<div style="font-family: helvetica; color: #555555;">';
+        if ( ! empty( $footer_data['footer_text'] ) ) {
+            $footer_html .= '<span style="font-size:9px; color: #000000;">' . nl2br( esc_html( $footer_data['footer_text'] ) ) . '</span><br><br>';
+        }
+
+        $footer_html .= '
+        <table cellpadding="0" cellspacing="0" border="0" width="100%" style="border-top:1px solid #ccc; font-size:9px;">
+            <tr><td colspan="3" style="height:5px;"></td></tr>
+            <tr>
+                <td width="33%" valign="top">
+                    ' . $footer_data['store_name'] . '<br>
+                    ' . $footer_data['store_address'] . '<br>
+                    ' . $footer_data['store_postcode'] . ' ' . $footer_data['store_city'] . '
+                </td>
+                <td width="33%" align="center" valign="top">&nbsp;</td>
+                <td width="33%" align="right" valign="top">
+                    E-Mail: ' . $footer_data['store_email'] . '<br>
+                    Web: ' . $footer_data['home_url'] . '
+                </td>
+            </tr>
+        </table></div>';
+
+        $mpdf->SetHTMLFooter($footer_html);
 
         // Title Section
-        $title_html = '
+        $body_html = '
         <br>
-        <table cellpadding="4" cellspacing="0" border="0" style="border-top:1px solid #000; border-bottom:1px solid #000;">
+        <table width="100%" cellpadding="4" cellspacing="0" border="0" style="border-top:1px solid #000; border-bottom:1px solid #000; font-family: helvetica;">
             <tr>
-                <td width="55%"><span style="font-size:12px; font-weight:bold;">Invoice No. ' . $invoice->invoice_number . '</span></td>
-                <td width="45%" align="right"><span style="font-size:10px; font-weight:bold;">' . gmdate( 'd.m.Y', strtotime( $invoice->start_date ) ) . ' to ' . gmdate( 'd.m.Y', strtotime( $invoice->end_date ) ) . '</span></td>
+                <td width="55%" valign="middle"><span style="font-size:12px; font-weight:bold;">Invoice No. ' . $invoice->invoice_number . '</span></td>
+                <td width="45%" align="right" valign="middle"><span style="font-size:10px; font-weight:bold;">' . gmdate( 'd.m.Y', strtotime( $invoice->start_date ) ) . ' to ' . gmdate( 'd.m.Y', strtotime( $invoice->end_date ) ) . '</span></td>
             </tr>
         </table>';
 
-        $pdf->writeHTML( $title_html, true, false, true, false, '' );
-
         // Items Grouped by Order
         $current_order_id = 0;
-        $iteinvoiceclerk_html = '<br><table cellpadding="2" cellspacing="0" border="0" width="100%">';
+        $body_html .= '<br><table cellpadding="2" cellspacing="0" border="0" width="100%" style="font-family: helvetica;">';
 
         foreach ( $items as $item ) {
             if ( $item->order_id !== $current_order_id ) {
@@ -184,7 +167,7 @@ class Generator {
                     $header_text = 'Order No: ' . $current_order_id . ', Ordered on ' . $order_date;
                 }
 
-                $iteinvoiceclerk_html .= '
+                $body_html .= '
                     <tr>
                         <td colspan="3" style="padding-top:8px;">
                             <span style="font-size:9px; font-weight:bold;">' . $header_text . '</span>
@@ -194,37 +177,45 @@ class Generator {
 
             $qty_display = ( $item->item_type === 'shipping' ) ? '' : number_format( $item->quantity, 2 );
 
-            $iteinvoiceclerk_html .= '
+            $body_html .= '
                 <tr>
-                    <td width="10%" align="right" style="font-size:9px;">' . $qty_display . '</td>
-                    <td width="70%" style="font-size:9px;">' . esc_html( $item->product_name ) . '</td>
-                    <td width="20%" align="right" style="font-size:9px;">' . wp_strip_all_tags( wc_price( $item->line_total ) ) . '</td>
+                    <td width="10%" align="right" style="font-size:9px;" valign="top">' . $qty_display . '</td>
+                    <td width="70%" style="font-size:9px;" valign="top">' . esc_html( $item->product_name ) . '</td>
+                    <td width="20%" align="right" style="font-size:9px;" valign="top">' . wp_strip_all_tags( wc_price( $item->line_total ) ) . '</td>
                 </tr>';
         }
 
-        $iteinvoiceclerk_html .= '</table>';
-        $pdf->writeHTML( $iteinvoiceclerk_html, true, false, true, false, '' );
+        $body_html .= '</table>';
 
-        // Position Totals at the bottom
-        $pdf->SetY(-60);
+        $mpdf->setAutoBottomMargin = 'stretch';
 
-        // Totals Section
+        // Build Totals section to be prepended to the footer on the last page
         $totals_html = '
-        <table cellpadding="4" cellspacing="0" border="0" style="border-top:1px solid #000;">
+        <table width="100%" cellpadding="4" cellspacing="0" border="0" style="border-top:1px solid #000; font-family: helvetica; margin-bottom: 25px;">
             <tr>
-                <td width="50%">
+                <td width="50%" valign="middle">
                     <span style="font-size:12px; font-weight:bold;">Total Amount to Pay</span>
                 </td>
-                <td width="50%" align="right">
+                <td width="50%" align="right" valign="middle">
                     <span style="font-size:14px; font-weight:bold;">' . wp_strip_all_tags( wc_price( $invoice->total ) ) . '</span>
                 </td>
             </tr>
         </table>';
 
-        $pdf->writeHTML( $totals_html, true, false, true, false, '' );
+        $last_page_footer_html = $totals_html . $footer_html;
+
+        // Append to body HTML
+        $body_html .= '
+        <htmlpagefooter name="lastpage">
+            ' . $last_page_footer_html . '
+        </htmlpagefooter>
+        <sethtmlpagefooter name="lastpage" value="on" show-this-page="1" />
+        ';
+
+        $mpdf->WriteHTML($body_html);
 
         // Close and output PDF document
-        $pdf->Output( $invoice->invoice_number . '.pdf', 'D' );
+        $mpdf->Output( $invoice->invoice_number . '.pdf', \Mpdf\Output\Destination::DOWNLOAD );
         exit;
     }
 }
