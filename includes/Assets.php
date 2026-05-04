@@ -64,13 +64,21 @@ class Assets {
 	public function enqueue_admin_scripts() {
 		wp_enqueue_style( 'invoiceclerk_admin_style' );
 		wp_enqueue_script( 'invoiceclerk_admin_script' );
-		wp_localize_script(
+
+		$config = array(
+			'ajax_url' => admin_url( 'admin-ajax.php' ),
+			'nonce'    => wp_create_nonce( 'invoiceclerk_admin_nonce' ),
+			'i18n'     => array(
+				'fetching'     => __( 'Fetching...', 'invoiceclerk' ),
+				'fetch_orders' => __( 'Fetch Orders', 'invoiceclerk' ),
+				'no_orders'    => __( 'No eligible orders found for this customer in the selected date range.', 'invoiceclerk' ),
+			),
+		);
+
+		wp_add_inline_script(
 			'invoiceclerk_admin_script',
-			'InvoiceClerk_Admin',
-			array(
-				'ajax_url' => admin_url( 'admin-ajax.php' ),
-				'nonce'    => wp_create_nonce( 'invoiceclerk_admin_nonce' ),
-			)
+			'InvoiceClerk_Admin = ' . wp_json_encode( $config ) . ';',
+			'before'
 		);
 	}
 
@@ -81,10 +89,5 @@ class Assets {
 	 */
 	public function enqueue_front_scripts() {
 		wp_enqueue_script( 'invoiceclerk_script' );
-		wp_localize_script(
-			'invoiceclerk_script',
-			'InvoiceClerk',
-			array()
-		);
 	}
 }
