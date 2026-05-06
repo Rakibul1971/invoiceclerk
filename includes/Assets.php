@@ -36,10 +36,10 @@ class Assets {
 		$admin_script    = INVOICECLERK_PLUGIN_ADMIN_ASSET . '/js/script.js';
 		$frontend_script = INVOICECLERK_PLUGIN_PUBLIC_ASSET . '/js/script.js';
 
-		wp_register_script( 'invoiceclerk_daterangepicker', INVOICECLERK_PLUGIN_ADMIN_ASSET . '/js/daterangepicker.min.js', array( 'jquery', 'moment' ), '3.1', true );
+		wp_register_script( 'invoiceclerk_daterangepicker', INVOICECLERK_PLUGIN_ADMIN_ASSET . '/js/daterangepicker.min.js', array( 'jquery', 'moment' ), '3.1', array( 'strategy' => 'defer', 'in_footer' => true ) );
 
-		wp_register_script( 'invoiceclerk_admin_script', $admin_script, array( 'jquery', 'moment', 'invoiceclerk_daterangepicker' ), INVOICECLERK_PLUGIN_VERSION, true );
-		wp_register_script( 'invoiceclerk_script', $frontend_script, array(), INVOICECLERK_PLUGIN_VERSION, true );
+		wp_register_script( 'invoiceclerk_admin_script', $admin_script, array( 'jquery', 'moment', 'invoiceclerk_daterangepicker' ), INVOICECLERK_PLUGIN_VERSION, array( 'strategy' => 'defer', 'in_footer' => true ) );
+		wp_register_script( 'invoiceclerk_script', $frontend_script, array(), INVOICECLERK_PLUGIN_VERSION, array( 'strategy' => 'defer', 'in_footer' => true ) );
 	}
 
 	/**

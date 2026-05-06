@@ -15,7 +15,7 @@ final class ManualSettlement {
      *
      * @var string
      */
-    public $version = '0.0.1';
+    public $version = '0.1.1';
 
     /**
      * Instance of self

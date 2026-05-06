@@ -4,7 +4,7 @@ defined( 'ABSPATH' ) || exit;
 /**
  * Plugin Name: InvoiceClerk – Manual Settlement for WooCommerce
  * Description: Generate batch invoices from WooCommerce orders and manage manual settlements with ease.
- * Version: 0.1.0
+ * Version: 0.1.1
  * Author: MD. Rakibul Islam Shazol
  * Author URI: https://profiles.wordpress.org/rakibulislamshazol/
  * Text Domain: invoiceclerk

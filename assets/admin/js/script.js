@@ -109,4 +109,9 @@ jQuery(document).ready(function($) {
             .prop('checked', $(this).prop('checked'));
     });
 
+    // Delete confirmation
+    $('.invoiceclerk-delete-btn').on('click', function() {
+        return confirm($(this).data('confirm'));
+    });
+
 });

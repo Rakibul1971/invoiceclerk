@@ -2,9 +2,9 @@
 Contributors: rakibulislamshazol
 Tags: woocommerce, invoice, settlement, manual settlement, batch invoice
 Requires at least: 5.0
-Tested up to: 6.9
+Tested up to: 6.5
 Requires PHP: 7.4
-Stable tag: 0.1.0
+Stable tag: 0.1.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -38,6 +38,7 @@ You can set a custom footer message and store details from the settings page.
 == Third-party Libraries ==
 
 * Date Range Picker - Source: https://github.com/dangrossman/daterangepicker
+* mPDF - Source: https://github.com/mpdf/mpdf
 
 == Screenshots ==
 
@@ -46,6 +47,12 @@ You can set a custom footer message and store details from the settings page.
 3. A sample PDF invoice with grouped orders and refunds.
 
 == Changelog ==
+
+= 0.1.1 =
+* Fixed issues found in plugin review.
+* Removed deprecated TCPDF library and migrated to mPDF.
+* Moved inline JavaScript to enqueued script files.
+* Updated contributors list.
 
 = 0.1.0 =
 * Initial release.

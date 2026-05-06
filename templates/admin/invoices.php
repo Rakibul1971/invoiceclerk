@@ -73,7 +73,7 @@ $invoiceclerk_invoices = $wpdb->get_results( "SELECT * FROM {$wpdb->prefix}invoi
                             <a href="<?php echo esc_url( wp_nonce_url( admin_url( 'admin-post.php?action=invoiceclerk_delete_invoice&id=' . $invoiceclerk_invoice->id ), 'invoiceclerk_delete_invoice_nonce' ) ); ?>" 
                                class="button button-small invoiceclerk-delete-btn" 
                                style="color: #b32d2e; border-color: #b32d2e;"
-                               onclick="return confirm('<?php echo esc_js( __( 'Are you sure you want to delete this invoice and release all mapped orders?', 'invoiceclerk' ) ); ?>');">
+                               data-confirm="<?php echo esc_attr__( 'Are you sure you want to delete this invoice and release all mapped orders?', 'invoiceclerk' ); ?>">
                                <?php esc_html_e( 'Delete', 'invoiceclerk' ); ?>
                             </a>
                         </td>
