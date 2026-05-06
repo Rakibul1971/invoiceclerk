@@ -67,9 +67,15 @@ status "Installing dependencies... 📦"
 cd $BUILD_DIR
 composer install --optimize-autoloader --no-dev -q
 
-# Remove unnecessary fonts from TCPDF to keep the plugin size small
-status "Trimming TCPDF fonts... ✂️"
-find vendor/tecnickcom/tcpdf/fonts -type f ! -name "helvetica*" ! -name "times*" ! -name "courier*" ! -name "pdfa*" ! -name "pdfac*" ! -name "uni2cid*" ! -name "index.php" -size +50k -delete
+# Remove unnecessary fonts from mPDF to keep the plugin size small
+status "Trimming mPDF fonts... ✂️"
+if [ -d "vendor/mpdf/mpdf/ttfonts" ]; then
+    find vendor/mpdf/mpdf/ttfonts -type f ! -name "DejaVuSans*" ! -name "DejaVuSerif*" -delete
+fi
+
+# Remove mPDF temporary/cache directories if they exist
+rm -rf vendor/mpdf/mpdf/tmp
+rm -rf vendor/mpdf/mpdf/ttfontdata
 
 # We are keeping composer.json as required by some plugin checkers when /vendor exists
 # rm composer.json composer.lock
