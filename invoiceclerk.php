@@ -8,7 +8,7 @@
  * Author URI: https://profiles.wordpress.org/rakibulislamshazol/
  * Text Domain: invoiceclerk
  * Domain Path: /languages/
- * Requires at least: 5.0
+ * Requires at least: 6.2
  * Requires PHP: 7.4
  * WC requires at least: 5.0.0
  * License: GPLv2 or later
