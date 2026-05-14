@@ -49,9 +49,9 @@ class Installer {
             invoice_number varchar(50) NOT NULL,
             start_date date NOT NULL,
             end_date date NOT NULL,
-            subtotal decimal(19,4) NOT NULL DEFAULT '0.0000',
-            tax_total decimal(19,4) NOT NULL DEFAULT '0.0000',
-            total decimal(19,4) NOT NULL DEFAULT '0.0000',
+            subtotal decimal(26,8) NOT NULL DEFAULT '0.00000000',
+            tax_total decimal(26,8) NOT NULL DEFAULT '0.00000000',
+            total decimal(26,8) NOT NULL DEFAULT '0.00000000',
             status varchar(20) NOT NULL DEFAULT 'draft',
             created_at datetime NOT NULL,
             updated_at datetime NOT NULL,
@@ -67,8 +67,8 @@ class Installer {
             product_id bigint(20) UNSIGNED NOT NULL,
             product_name varchar(255) NOT NULL,
             quantity int(11) NOT NULL,
-            price decimal(19,4) NOT NULL DEFAULT '0.0000',
-            line_total decimal(19,4) NOT NULL DEFAULT '0.0000',
+            price decimal(26,8) NOT NULL DEFAULT '0.00000000',
+            line_total decimal(26,8) NOT NULL DEFAULT '0.00000000',
             PRIMARY KEY  (id),
             KEY invoice_id (invoice_id)
         ) $charset_collate;";
