@@ -127,14 +127,14 @@ class Generator {
             <tr><td colspan="3" style="height:5px;"></td></tr>
             <tr>
                 <td width="33%" valign="top">
-                    ' . $footer_data['store_name'] . '<br>
-                    ' . $footer_data['store_address'] . '<br>
-                    ' . $footer_data['store_postcode'] . ' ' . $footer_data['store_city'] . '
+                    ' . esc_html( $footer_data['store_name'] ) . '<br>
+                    ' . esc_html( $footer_data['store_address'] ) . '<br>
+                    ' . esc_html( $footer_data['store_postcode'] ) . ' ' . esc_html( $footer_data['store_city'] ) . '
                 </td>
                 <td width="33%" align="center" valign="top">&nbsp;</td>
                 <td width="33%" align="right" valign="top">
-                    E-Mail: ' . $footer_data['store_email'] . '<br>
-                    Web: ' . $footer_data['home_url'] . '
+                    E-Mail: ' . esc_html( $footer_data['store_email'] ) . '<br>
+                    Web: ' . esc_url( $footer_data['home_url'] ) . '
                 </td>
             </tr>
         </table></div>';
@@ -146,8 +146,8 @@ class Generator {
         <br>
         <table width="100%" cellpadding="4" cellspacing="0" border="0" style="border-top:1px solid #000; border-bottom:1px solid #000; font-family: helvetica;">
             <tr>
-                <td width="55%" valign="middle"><span style="font-size:12px; font-weight:bold;">Invoice No. ' . $invoice->invoice_number . '</span></td>
-                <td width="45%" align="right" valign="middle"><span style="font-size:10px; font-weight:bold;">' . gmdate( 'd.m.Y', strtotime( $invoice->start_date ) ) . ' to ' . gmdate( 'd.m.Y', strtotime( $invoice->end_date ) ) . '</span></td>
+                <td width="55%" valign="middle"><span style="font-size:12px; font-weight:bold;">' . esc_html__( 'Invoice No. ', 'invoiceclerk' ) . esc_html( $invoice->invoice_number ) . '</span></td>
+                <td width="45%" align="right" valign="middle"><span style="font-size:10px; font-weight:bold;">' . esc_html( gmdate( 'd.m.Y', strtotime( $invoice->start_date ) ) ) . ' to ' . esc_html( gmdate( 'd.m.Y', strtotime( $invoice->end_date ) ) ) . '</span></td>
             </tr>
         </table>';
 
@@ -170,7 +170,7 @@ class Generator {
                 $body_html .= '
                     <tr>
                         <td colspan="3" style="padding-top:8px;">
-                            <span style="font-size:9px; font-weight:bold;">' . $header_text . '</span>
+                            <span style="font-size:9px; font-weight:bold;">' . esc_html( $header_text ) . '</span>
                         </td>
                     </tr>';
             }

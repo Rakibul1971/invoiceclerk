@@ -1,24 +1,31 @@
 <?php
-defined( 'ABSPATH' ) || exit;
-
 /**
  * Plugin Name: InvoiceClerk – Manual Settlement for WooCommerce
+ * Plugin URI: https://github.com/Rakibul1971/invoiceclerk
  * Description: Generate batch invoices from WooCommerce orders and manage manual settlements with ease.
  * Version: 0.1.1
  * Author: MD. Rakibul Islam Shazol
  * Author URI: https://profiles.wordpress.org/rakibulislamshazol/
  * Text Domain: invoiceclerk
- * WC requires at least: 5.0.0
  * Domain Path: /languages/
+ * Requires at least: 5.0
+ * Requires PHP: 7.4
+ * WC requires at least: 5.0.0
+ * License: GPLv2 or later
+ * License URI: https://www.gnu.org/licenses/gpl-2.0.html
  * Requires Plugins: woocommerce
- * License: GPL2
  */
+
+defined( 'ABSPATH' ) || exit;
+
 use InvoiceClerk\ManualSettlement\ManualSettlement;
 
-// don't call the file directly
-if ( ! defined( 'ABSPATH' ) ) {
-    exit;
-}
+// Declare HPOS compatibility
+add_action( 'before_woocommerce_init', function() {
+    if ( class_exists( \Automattic\WooCommerce\Utilities\FeaturesUtil::class ) ) {
+        \Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility( 'custom_order_tables', __FILE__, true );
+    }
+} );
 
 if ( ! defined( 'INVOICECLERK_FILE' ) ) {
     define( 'INVOICECLERK_FILE', __FILE__ );

@@ -27,6 +27,10 @@ class InvoiceManager {
     public function fetch_orders() {
         check_ajax_referer( 'invoiceclerk_admin_nonce', 'nonce' );
 
+        if ( ! current_user_can( 'manage_woocommerce' ) ) {
+            wp_send_json_error( esc_html__( 'Permission denied.', 'invoiceclerk' ) );
+        }
+
         $customer_id = isset( $_POST['customer_id'] ) ? absint( $_POST['customer_id'] ) : 0;
         $start_date  = isset( $_POST['start_date'] ) ? sanitize_text_field( wp_unslash( $_POST['start_date'] ) ) : '';
         $end_date    = isset( $_POST['end_date'] ) ? sanitize_text_field( wp_unslash( $_POST['end_date'] ) ) : '';
@@ -137,6 +141,10 @@ class InvoiceManager {
         $nonce = isset( $_POST['_wpnonce'] ) ? sanitize_text_field( wp_unslash( $_POST['_wpnonce'] ) ) : '';
         if ( ! wp_verify_nonce( $nonce, 'invoiceclerk_create_invoice_nonce' ) ) {
             wp_die( esc_html__( 'Security check failed.', 'invoiceclerk' ) );
+        }
+
+        if ( ! current_user_can( 'manage_woocommerce' ) ) {
+            wp_die( esc_html__( 'Permission denied.', 'invoiceclerk' ) );
         }
 
         $customer_id = isset( $_POST['customer_id'] ) ? absint( $_POST['customer_id'] ) : 0;
@@ -311,6 +319,10 @@ class InvoiceManager {
             wp_die( esc_html__( 'Security check failed.', 'invoiceclerk' ) );
         }
 
+        if ( ! current_user_can( 'manage_woocommerce' ) ) {
+            wp_die( esc_html__( 'Permission denied.', 'invoiceclerk' ) );
+        }
+
         $id = isset( $_GET['id'] ) ? absint( $_GET['id'] ) : 0;
         if ( ! $id ) {
             wp_die( esc_html__( 'Invalid invoice ID.', 'invoiceclerk' ) );
@@ -329,6 +341,10 @@ class InvoiceManager {
         $nonce = isset( $_GET['_wpnonce'] ) ? sanitize_text_field( wp_unslash( $_GET['_wpnonce'] ) ) : '';
         if ( ! wp_verify_nonce( $nonce, 'invoiceclerk_update_status_nonce' ) ) {
             wp_die( esc_html__( 'Security check failed.', 'invoiceclerk' ) );
+        }
+
+        if ( ! current_user_can( 'manage_woocommerce' ) ) {
+            wp_die( esc_html__( 'Permission denied.', 'invoiceclerk' ) );
         }
 
         $id     = isset( $_GET['id'] ) ? absint( $_GET['id'] ) : 0;
@@ -359,6 +375,10 @@ class InvoiceManager {
         $nonce = isset( $_GET['_wpnonce'] ) ? sanitize_text_field( wp_unslash( $_GET['_wpnonce'] ) ) : '';
         if ( ! wp_verify_nonce( $nonce, 'invoiceclerk_delete_invoice_nonce' ) ) {
             wp_die( esc_html__( 'Security check failed.', 'invoiceclerk' ) );
+        }
+
+        if ( ! current_user_can( 'manage_woocommerce' ) ) {
+            wp_die( esc_html__( 'Permission denied.', 'invoiceclerk' ) );
         }
 
         $id = isset( $_GET['id'] ) ? absint( $_GET['id'] ) : 0;
@@ -395,5 +415,16 @@ class InvoiceManager {
             $wpdb->query( 'ROLLBACK' );
             wp_die( esc_html__( 'Failed to delete invoice.', 'invoiceclerk' ) );
         }
+    }
+
+    /**
+     * Get all invoices
+     *
+     * @return array
+     */
+    public function get_invoices() {
+        global $wpdb;
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+        return $wpdb->get_results( "SELECT * FROM {$wpdb->prefix}invoiceclerk_invoices ORDER BY created_at DESC" );
     }
 }

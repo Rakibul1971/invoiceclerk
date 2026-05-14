@@ -2,11 +2,10 @@
 defined( 'ABSPATH' ) || exit;
 /**
  * Invoices List Template
+ *
+ * @var array $invoices
  */
-
-global $wpdb;
-// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
-$invoiceclerk_invoices = $wpdb->get_results( "SELECT * FROM {$wpdb->prefix}invoiceclerk_invoices ORDER BY created_at DESC" );
+$invoiceclerk_invoices = isset( $invoices ) ? $invoices : [];
 ?>
 <div class="wrap">
     <h1 class="wp-heading-inline"><?php esc_html_e( 'Invoices', 'invoiceclerk' ); ?></h1>

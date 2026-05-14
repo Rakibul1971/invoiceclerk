@@ -69,7 +69,8 @@ class Menu {
      * @return void
      */
     public function invoices_page() {
-        invoiceclerk()->get_template( 'admin/invoices.php' );
+        $invoices = invoiceclerk()->invoice_manager->get_invoices();
+        invoiceclerk()->get_template( 'admin/invoices.php', [ 'invoices' => $invoices ] );
     }
 
     /**

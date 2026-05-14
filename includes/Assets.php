@@ -18,7 +18,7 @@ class Assets {
 	}
 
 	/**
-	 * Register all Dokan scripts and styles.
+	 * Register all scripts and styles.
 	 *
 	 * @return void
 	 */
@@ -59,9 +59,15 @@ class Assets {
 	/**
 	 * Enqueue admin scripts.
 	 *
+	 * @param string $hook The current admin page hook.
+	 *
 	 * @return void
 	 */
-	public function enqueue_admin_scripts() {
+	public function enqueue_admin_scripts( $hook ) {
+		if ( strpos( $hook, 'invoiceclerk' ) === false ) {
+			return;
+		}
+
 		wp_enqueue_style( 'invoiceclerk_admin_style' );
 		wp_enqueue_script( 'invoiceclerk_admin_script' );
 

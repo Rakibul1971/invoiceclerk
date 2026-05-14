@@ -27,8 +27,6 @@ final class ManualSettlement {
     /**
      * Holds various class instances
      *
-     * @since 2.6.10
-     *
      * @var array
      */
     private $container = [];
@@ -69,8 +67,6 @@ final class ManualSettlement {
     /**
      * Magic getter to bypass referencing objects
      *
-     * @since 2.6.10
-     *
      * @param string $prop
      *
      * @return Class Instance
@@ -107,8 +103,6 @@ final class ManualSettlement {
 
     /**
      * Flush rewrite rules after invoiceclerk is activated or woocommerce is activated
-     *
-     * @since 3.2.8
      */
     public function flush_rewrite_rules() {
         // fix rewrite rules
@@ -143,7 +137,7 @@ final class ManualSettlement {
     }
 
     /**
-     * Load the plugin after WP User Frontend is loaded
+     * Load the plugin
      *
      * @return void
      */
@@ -188,10 +182,6 @@ final class ManualSettlement {
     /**
      * Executed after all plugins are loaded
      *
-     * At this point invoiceclerk Pro is loaded
-     *
-     * @since 2.8.7
-     *
      * @return void
      */
     public function after_plugins_loaded() {
@@ -201,8 +191,6 @@ final class ManualSettlement {
     /**
      * Check whether woocommerce is installed and active
      *
-     * @since 2.9.16
-     *
      * @return bool
      */
     public function has_woocommerce() {
@@ -211,8 +199,6 @@ final class ManualSettlement {
 
     /**
      * Check whether woocommerce is installed
-     *
-     * @since 3.2.8
      *
      * @return bool
      */

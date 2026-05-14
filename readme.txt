@@ -37,8 +37,8 @@ You can set a custom footer message and store details from the settings page.
 
 == Third-party Libraries ==
 
-* Date Range Picker - Source: https://github.com/dangrossman/daterangepicker
-* mPDF - Source: https://github.com/mpdf/mpdf
+* Date Range Picker - Version: 3.1, License: MIT, Source: https://github.com/dangrossman/daterangepicker
+* mPDF - Version: 8.3.1, License: GPLv2, Source: https://github.com/mpdf/mpdf
 
 == Screenshots ==
 
