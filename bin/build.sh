@@ -77,8 +77,8 @@ fi
 rm -rf vendor/mpdf/mpdf/tmp
 rm -rf vendor/mpdf/mpdf/ttfontdata
 
-# Remove composer build files - not needed in distribution (only vendor/ is needed)
-rm -f composer.json composer.lock
+# Remove composer.lock (build state) but keep composer.json (metadata) for checkers
+rm -f composer.lock
 
 # Clean up vendor folder - remove tests, documentation, and other non-production files
 status "Cleaning up vendor directory... 🧹"
