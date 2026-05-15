@@ -94,6 +94,8 @@ find vendor/ -type f -name "README*" -delete
 find vendor/ -type f -name "CHANGELOG*" -delete
 find vendor/ -type f -name "CONTRIBUTING*" -delete
 find vendor/ -type f -name "LICENSE*" -delete
+find vendor/ -type f -name "*.sh" -delete
+find vendor/ -type f -name "*.bat" -delete
 
 # go one up, to the build dir
 status "Creating archive... 🎁"
