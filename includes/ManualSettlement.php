@@ -57,7 +57,7 @@ final class ManualSettlement {
      * @return ManualSettlement
      */
     public static function init() {
-        if ( self::$instance === null ) {
+        if ( null === self::$instance ) {
 			self::$instance = new self();
 		}
 

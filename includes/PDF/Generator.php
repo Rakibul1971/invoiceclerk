@@ -175,7 +175,7 @@ class Generator {
                     </tr>';
             }
 
-            $qty_display = ( $item->item_type === 'shipping' ) ? '' : number_format( $item->quantity, 2 );
+            $qty_display = ( 'shipping' === $item->item_type ) ? '' : number_format( $item->quantity, 2 );
 
             $body_html .= '
                 <tr>

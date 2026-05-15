@@ -104,7 +104,7 @@ class Settings {
 
         echo '<div class="invoiceclerk-checkbox-group">';
         foreach ( $statuses as $key => $label ) {
-            if ( $key === 'wc-refunded' ) {
+            if ( 'wc-refunded' === $key ) {
                 continue;
             }
             echo '<label style="display:block; margin-bottom:5px;">';
