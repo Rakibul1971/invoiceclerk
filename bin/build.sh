@@ -50,7 +50,7 @@ status "Generating build... 👷‍♀️"
 
 # Copy all files
 status "Copying files... ✌️"
-FILES=(invoiceclerk.php readme.txt dist includes templates assets languages composer.json composer.lock)
+FILES=(invoiceclerk.php uninstall.php readme.txt includes templates assets languages composer.json composer.lock)
 
 for file in ${FILES[@]}; do
     if [ -f "$file" ] || [ -d "$file" ]; then
@@ -77,8 +77,23 @@ fi
 rm -rf vendor/mpdf/mpdf/tmp
 rm -rf vendor/mpdf/mpdf/ttfontdata
 
-# We are keeping composer.json as required by some plugin checkers when /vendor exists
-# rm composer.json composer.lock
+# Remove composer build files - not needed in distribution (only vendor/ is needed)
+rm -f composer.json composer.lock
+
+# Clean up vendor folder - remove tests, documentation, and other non-production files
+status "Cleaning up vendor directory... 🧹"
+find vendor/ -type d -name "tests" -exec rm -rf {} +
+find vendor/ -type d -name "test" -exec rm -rf {} +
+find vendor/ -type d -name "docs" -exec rm -rf {} +
+find vendor/ -type d -name ".github" -exec rm -rf {} +
+find vendor/ -type f -name ".gitignore" -delete
+find vendor/ -type f -name ".gitattributes" -delete
+find vendor/ -type f -name "composer.json" -delete
+find vendor/ -type f -name "composer.lock" -delete
+find vendor/ -type f -name "README*" -delete
+find vendor/ -type f -name "CHANGELOG*" -delete
+find vendor/ -type f -name "CONTRIBUTING*" -delete
+find vendor/ -type f -name "LICENSE*" -delete
 
 # go one up, to the build dir
 status "Creating archive... 🎁"
