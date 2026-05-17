@@ -15,9 +15,10 @@
         }
     ],
     "require": {
-        "mpdf/mpdf": "^8.2"
+        "mpdf/mpdf": "^8.3.1"
     },
     "minimum-stability": "dev",
+    "prefer-stable": true,
     "require-dev": {
         "dealerdirect/phpcodesniffer-composer-installer": "^1.0",
         "tareq1988/wp-php-cs-fixer": "dev-master",
