@@ -3,7 +3,7 @@
  * Plugin Name: InvoiceClerk – Manual Settlement for WooCommerce
  * Plugin URI: https://github.com/Rakibul1971/invoiceclerk
  * Description: Generate batch invoices from WooCommerce orders and manage manual settlements with ease.
- * Version: 0.1.1
+ * Version: 0.1.2
  * Author: MD. Rakibul Islam Shazol
  * Author URI: https://profiles.wordpress.org/rakibulislamshazol/
  * Text Domain: invoiceclerk

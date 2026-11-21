@@ -2,9 +2,9 @@
 Contributors: rakibulislamshazol
 Tags: woocommerce, invoice, settlement, manual settlement, batch invoice
 Requires at least: 6.2
-Tested up to: 6.9
+Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 0.1.1
+Stable tag: 0.1.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -47,6 +47,11 @@ You can set a custom footer message and store details from the settings page.
 3. A sample PDF invoice with grouped orders and refunds.
 
 == Changelog ==
+
+= 0.1.2 =
+* Updated WordPress compatibility to 7.1.
+* Improved plugin compatibility and maintenance.
+* Updated CI/CD workflow for automated WordPress.org deployment.
 
 = 0.1.1 =
 * Fixed issues found in plugin review.
