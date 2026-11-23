@@ -45,6 +45,7 @@ You can set a custom footer message and store details from the settings page.
 1. The main invoice management screen.
 2. Creating a new batch invoice with order selection.
 3. A sample PDF invoice with grouped orders and refunds.
+4. Generated PDF invoice showing orders, refunds and the total amount to pay.
 
 == Changelog ==
 

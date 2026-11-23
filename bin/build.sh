@@ -3,19 +3,17 @@
 # Exit if any command fails.
 set -e
 
+# Pass --keep to leave build/invoiceclerk in place (used by CI deploy via BUILD_DIR).
+KEEP_BUILD_DIR=false
+if [ "$1" = "--keep" ]; then
+    KEEP_BUILD_DIR=true
+fi
+
 # Change to the expected directory.
 cd "$(dirname "$0")"
 cd ..
 DIR=$(pwd)
 BUILD_DIR="$DIR/build/invoiceclerk"
-
-VERSION=$(grep -E '^[[:space:]]*\* Version:' "$DIR/invoiceclerk.php" | head -n1 | sed -E 's/.*Version:[[:space:]]*([^[:space:]]+).*/\1/')
-if [ -z "$VERSION" ]; then
-    error "Could not determine version from invoiceclerk.php"
-    exit 1
-fi
-
-
 
 # Enable nicer messaging for build status.
 BLUE_BOLD='\033[1;34m'
@@ -36,6 +34,12 @@ success() {
 warning() {
     echo -e "\n${YELLOW_BOLD}$1${COLOR_RESET}\n"
 }
+
+VERSION=$(grep -E '^[[:space:]]*\* Version:' "$DIR/invoiceclerk.php" | head -n1 | sed -E 's/.*Version:[[:space:]]*([^[:space:]]+).*/\1/')
+if [ -z "$VERSION" ]; then
+    error "Could not determine version from invoiceclerk.php"
+    exit 1
+fi
 
 status "💃 Time to build the InvoiceClerk ZIP file 🕺"
 
@@ -102,8 +106,10 @@ status "Creating archive... 🎁"
 cd ..
 zip -r -q invoiceclerk-${VERSION}.zip invoiceclerk
 
-# remove the source directory
-rm -rf invoiceclerk
+# remove the source directory unless --keep was passed
+if [ "$KEEP_BUILD_DIR" = false ]; then
+    rm -rf invoiceclerk
+fi
 
 success "Done. You've built InvoiceClerk! 🎉 "
 echo -e "\n${BLUE_BOLD}File Path${COLOR_RESET}: ${YELLOW_BOLD}$(pwd)/invoiceclerk-${VERSION}.zip${COLOR_RESET} \n"

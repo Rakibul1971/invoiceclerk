@@ -33,3 +33,5 @@ vendor/theseer
 vendor/wp-coding-standards
 vendor/wp-phpunit
 vendor/yoast
+wordpress-org
+.DS_Store

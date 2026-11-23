@@ -22,13 +22,8 @@ jobs:
           tools: composer:v2
           coverage: none
 
-      - name: Install production dependencies
-        run: |
-          composer install \
-            --no-dev \
-            --prefer-dist \
-            --optimize-autoloader \
-            --no-interaction
+      - name: Build plugin
+        run: bash bin/build.sh --keep
 
       - name: Deploy plugin to WordPress.org
         uses: 10up/action-wordpress-plugin-deploy@stable
@@ -36,3 +31,5 @@ jobs:
           SVN_USERNAME: ${{ secrets.SVN_USERNAME }}
           SVN_PASSWORD: ${{ secrets.SVN_PASSWORD }}
           SLUG: invoiceclerk
+          ASSETS_DIR: wordpress-org
+          BUILD_DIR: build/invoiceclerk
